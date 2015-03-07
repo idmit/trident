@@ -10,11 +10,15 @@ greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
 TARGET = Trident
 TEMPLATE = app
-
+CONFIG += c++11
 
 SOURCES += main.cpp\
-        mainwindow.cpp
+        mainwindow.cpp \
+    spline.cpp \
+    canvas.cpp
 
-HEADERS  += mainwindow.h
+HEADERS  += mainwindow.h \
+    spline.h \
+    canvas.h
 
 FORMS    += mainwindow.ui

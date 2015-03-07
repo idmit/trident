@@ -2,13 +2,15 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
+#include <QPushButton>
+
+#include "canvas.h"
 
 namespace Ui {
-  class MainWindow;
+class MainWindow;
 }
 
-class MainWindow : public QMainWindow
-{
+class MainWindow : public QMainWindow {
   Q_OBJECT
 
 public:
@@ -17,6 +19,9 @@ public:
 
 private:
   Ui::MainWindow *ui;
+  Canvas canvas;
+
+  void initMenuBar();
 };
 
 #endif // MAINWINDOW_H
