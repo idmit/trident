@@ -2,7 +2,6 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
-#include <QPushButton>
 
 #include "canvas.h"
 
@@ -19,7 +18,6 @@ public:
 
 private:
   Ui::MainWindow *ui;
-  Canvas canvas;
 
   void initMenuBar();
 };

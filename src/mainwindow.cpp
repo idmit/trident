@@ -1,12 +1,21 @@
+#include <QMenuBar>
+#include <QTabWidget>
+
 #include "mainwindow.h"
+#include "tabwidget.h"
 #include "ui_mainwindow.h"
 
 MainWindow::MainWindow(QWidget *parent)
-    : QMainWindow(parent), ui(new Ui::MainWindow), canvas(this) {
+    : QMainWindow(parent), ui(new Ui::MainWindow) {
   ui->setupUi(this);
-  ui->editorLayout->addWidget(&canvas);
-
   initMenuBar();
+
+  QTabWidget *qTabWidget = new QTabWidget(this);
+  qTabWidget->addTab(new TabWidget(qTabWidget), "First Project");
+  qTabWidget->addTab(new TabWidget(qTabWidget), "Second Project");
+  qTabWidget->addTab(new TabWidget(qTabWidget), "Third Project");
+
+  ui->gridLayout->addWidget(qTabWidget);
 }
 
 void MainWindow::initMenuBar() {
@@ -28,6 +37,4 @@ void MainWindow::initMenuBar() {
   menuBar->addMenu(menuAbout);
 }
 
-MainWindow::~MainWindow() {
-  delete ui;
-}
+MainWindow::~MainWindow() { delete ui; }
