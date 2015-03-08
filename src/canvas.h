@@ -8,6 +8,7 @@ class Canvas : public QWidget {
   Q_OBJECT
 public:
   explicit Canvas(QWidget *parent = 0);
+  void setSpline(Spline *spline);
 
 protected:
   void paintEvent(QPaintEvent *);
@@ -19,7 +20,7 @@ protected:
    */
 
 private:
-  Spline spline;
+  Spline *spline = nullptr;
 };
 
 #endif // CANVAS_H
