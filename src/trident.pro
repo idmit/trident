@@ -15,10 +15,12 @@ CONFIG += c++11
 SOURCES += main.cpp\
         mainwindow.cpp \
     spline.cpp \
-    canvas.cpp
+    canvas.cpp \
+    tabwidget.cpp
 
 HEADERS  += mainwindow.h \
     spline.h \
-    canvas.h
+    canvas.h \
+    tabwidget.h
 
 FORMS    += mainwindow.ui
