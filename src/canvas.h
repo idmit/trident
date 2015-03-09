@@ -2,7 +2,8 @@
 #define CANVAS_H
 
 #include <QWidget>
-#include <spline.h>
+
+#include "spline.h"
 
 class Canvas : public QWidget {
   Q_OBJECT
@@ -12,15 +13,18 @@ public:
 
 protected:
   void paintEvent(QPaintEvent *);
+  void mouseDoubleClickEvent(QMouseEvent *);
   /*
    * void mousePressEvent(QMouseEvent *);
-   * void mouseDoubleClickEvent(QMouseEvent *);
    * void mouseMoveEvent(QMouseEvent *);
    * void mouseReleaseEvent(QMouseEvent *);
    */
 
 private:
   Spline *spline = nullptr;
+
+public slots:
+  void undoCmd();
 };
 
 #endif // CANVAS_H

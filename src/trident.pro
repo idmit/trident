@@ -21,6 +21,7 @@ SOURCES += main.cpp\
 HEADERS  += mainwindow.h \
     spline.h \
     canvas.h \
-    tabwidget.h
+    tabwidget.h \
+    canvas_actions.h
 
 FORMS    += mainwindow.ui
