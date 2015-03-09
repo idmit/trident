@@ -1,6 +1,10 @@
 #include "spline.h"
 
-Spline::Spline() {}
+Spline::Spline(QObject *parent) {
+  if (parent != nullptr) {
+    undoStack = new QUndoStack(parent);
+  }
+}
 
 size_t Spline::addPoint(QPointF &point) { return points.insert(point); }
 
