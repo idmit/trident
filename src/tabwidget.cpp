@@ -12,16 +12,6 @@ TabWidget::TabWidget(QWidget *parent) : QWidget(parent) {
   map["B"] = Spline(this);
   map["C"] = Spline(this);
 
-  map["A"].addPoint(0, 0);
-  map["A"].addPoint(0.33, 1);
-  map["B"].addPoint(0, 0);
-  map["B"].addPoint(0.33, 1);
-  map["C"].addPoint(0, 0);
-  map["C"].addPoint(0.33, 1);
-
-  map["B"].at(1).setX(0.66);
-  map["C"].at(1).setX(1);
-
   list = new QListWidget(this);
   list->setSelectionMode(QAbstractItemView::SingleSelection);
   canvas = new Canvas(this);
@@ -50,6 +40,4 @@ void TabWidget::reloadCanvas(const QString &currentText) {
   canvas->repaint();
 }
 
-void TabWidget::undoCmd() {
-  canvas->undoCmd();
-}
+void TabWidget::undoCmd() { canvas->undoCmd(); }

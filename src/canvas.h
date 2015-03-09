@@ -21,6 +21,7 @@ protected:
    */
 
 private:
+  size_t radius = 10;
   Spline *spline = nullptr;
 
 public slots:
