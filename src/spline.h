@@ -2,29 +2,21 @@
 #define SPLINE_H
 
 #include <QPainter>
-
-class Point {
-public:
-  Point(double x, double y) : x(x), y(y) {}
-
-public:
-  double x;
-  double y;
-};
+#include <QPointF>
 
 class Spline {
 public:
   explicit Spline();
-  void addPoint(Point &point);
-  void addPoint(double x, double y);
-  Point &at(size_t idx);
-  void draw(QPainter *painter);
+  size_t addPoint(QPointF &point);
+  size_t addPoint(double x, double y);
+  QPointF &at(size_t idx);
+  void removeAt(size_t idx);
   size_t size();
 
 private:
-  class OrderedPointSet : public QList<Point> {
+  class OrderedPointSet : public QList<QPointF> {
   public:
-    void insert(Point &point);
+    size_t insert(QPointF &point);
   };
 
   OrderedPointSet points;

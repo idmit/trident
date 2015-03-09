@@ -8,6 +8,20 @@ TabWidget::TabWidget(QWidget *parent) : QWidget(parent) {
   QHBoxLayout *layout = new QHBoxLayout;
   QSplitter *splitter = new QSplitter(this);
 
+  map["A"] = Spline(this);
+  map["B"] = Spline(this);
+  map["C"] = Spline(this);
+
+  map["A"].addPoint(0, 0);
+  map["A"].addPoint(0.33, 1);
+  map["B"].addPoint(0, 0);
+  map["B"].addPoint(0.33, 1);
+  map["C"].addPoint(0, 0);
+  map["C"].addPoint(0.33, 1);
+
+  map["B"].at(1).setX(0.66);
+  map["C"].at(1).setX(1);
+
   list = new QListWidget(this);
   list->setSelectionMode(QAbstractItemView::SingleSelection);
   canvas = new Canvas(this);
@@ -15,16 +29,6 @@ TabWidget::TabWidget(QWidget *parent) : QWidget(parent) {
   list->addItem(new QListWidgetItem("A"));
   list->addItem(new QListWidgetItem("B"));
   list->addItem(new QListWidgetItem("C"));
-
-  Spline s;
-  s.addPoint(0, 0);
-  s.addPoint(0.33, 1);
-  map["A"] = s;
-  map["B"] = s;
-  map["C"] = s;
-
-  map["B"].at(1).x = 0.66;
-  map["C"].at(1).x = 1;
 
   connect(list, &QListWidget::currentTextChanged, this,
           &TabWidget::reloadCanvas);

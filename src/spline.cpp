@@ -2,24 +2,27 @@
 
 Spline::Spline() {}
 
-void Spline::addPoint(Point &point) { points.insert(point); }
+size_t Spline::addPoint(QPointF &point) { return points.insert(point); }
 
-void Spline::addPoint(double x, double y) {
-  Point p(x, y);
-  points.insert(p);
+size_t Spline::addPoint(double x, double y) {
+  QPointF p(x, y);
+  return points.insert(p);
 }
 
-Point &Spline::at(size_t idx) { return points[idx]; }
+QPointF &Spline::at(size_t idx) { return points[idx]; }
 
-void Spline::OrderedPointSet::insert(Point &point) {
+size_t Spline::OrderedPointSet::insert(QPointF &point) {
   size_t idx = 0;
   for (const auto &p : (*this)) {
-    if (p.x >= point.x) {
+    if (p.x() >= point.x()) {
       break;
     }
     ++idx;
   }
-  QList<Point>::insert(idx, point);
+  QList<QPointF>::insert(idx, point);
+  return idx;
 }
+
+void Spline::removeAt(size_t idx) { points.removeAt(idx); }
 
 size_t Spline::size() { return points.size(); }
