@@ -3,7 +3,6 @@
 
 #include <QHash>
 #include <QListWidget>
-#include <QStackedWidget>
 #include <QString>
 #include <QWidget>
 
@@ -23,6 +22,7 @@ private:
 
 public slots:
   void reloadCanvas(const QString &currentText);
+  void undoCmd();
 };
 
 #endif // TABWIDGET_H

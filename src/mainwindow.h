@@ -17,9 +17,13 @@ public:
   ~MainWindow();
 
 private:
-  Ui::MainWindow *ui;
-
   void initMenuBar();
+
+  Ui::MainWindow *ui;
+  QTabWidget *qTabWidget;
+
+public slots:
+  void undoCmd();
 };
 
 #endif // MAINWINDOW_H

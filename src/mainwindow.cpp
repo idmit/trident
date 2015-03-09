@@ -10,7 +10,7 @@ MainWindow::MainWindow(QWidget *parent)
   ui->setupUi(this);
   initMenuBar();
 
-  QTabWidget *qTabWidget = new QTabWidget(this);
+  qTabWidget = new QTabWidget(this);
   qTabWidget->addTab(new TabWidget(qTabWidget), "First Project");
   qTabWidget->addTab(new TabWidget(qTabWidget), "Second Project");
   qTabWidget->addTab(new TabWidget(qTabWidget), "Third Project");
@@ -27,7 +27,8 @@ void MainWindow::initMenuBar() {
   menuFile->addAction("Exit");
 
   QMenu *menuEdit = new QMenu("Edit", this);
-  menuEdit->addAction("Undo");
+  menuEdit->addAction("Undo", this, SLOT(undoCmd()),
+                      QKeySequence(Qt::CTRL + Qt::Key_Z));
   menuEdit->addAction("Copy");
 
   QMenu *menuAbout = new QMenu("About", this);
@@ -38,3 +39,9 @@ void MainWindow::initMenuBar() {
 }
 
 MainWindow::~MainWindow() { delete ui; }
+
+void MainWindow::undoCmd() {
+  TabWidget *currentTab =
+      reinterpret_cast<TabWidget *>(qTabWidget->currentWidget());
+  currentTab->undoCmd();
+}

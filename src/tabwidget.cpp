@@ -49,3 +49,7 @@ void TabWidget::reloadCanvas(const QString &currentText) {
   canvas->setSpline(&map[currentText]);
   canvas->repaint();
 }
+
+void TabWidget::undoCmd() {
+  canvas->undoCmd();
+}
