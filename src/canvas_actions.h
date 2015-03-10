@@ -7,14 +7,14 @@
 
 class AddPointCmd : public QUndoCommand {
 public:
-  AddPointCmd(QPointF point, Spline *spline) : spline(spline), point(point) {}
+  AddPointCmd(QPointF point, Spline *spline) : point(point), spline(spline) {}
   virtual void redo() { idx = spline->addPoint(point); }
   virtual void undo() { spline->removeAt(idx); }
 
 private:
   size_t idx = 0;
-  Spline *spline;
   QPointF point;
+  Spline *spline;
 };
 
 #endif // CANVASACTIONS

@@ -9,13 +9,13 @@ class Spline {
 public:
   explicit Spline(QObject *parent = nullptr);
 
-  size_t addPoint(QPointF &point);
+  size_t addPoint(QPointF &point, bool rebuild = true);
   size_t addPoint(double x, double y);
-  QPointF &at(size_t idx);
+  QPointF &atSup(size_t idx);
   void build(size_t approxParam);
-  QPointF &extAt(size_t idx);
+  QPointF &atVal(size_t idx);
   size_t extSize();
-  void removeAt(size_t idx);
+  void removeAt(size_t idx, bool rebuild = true);
   size_t size();
 
   QUndoStack *undoStack = nullptr;
@@ -27,8 +27,8 @@ private:
   };
 
   static constexpr size_t approx = 100;
-  OrderedPointSet extSupport;
   OrderedPointSet support;
+  OrderedPointSet values;
 
   QPointF buildBasicSpline(QPointF &p0, QPointF &p1, QPointF &p2, QPointF &p3,
                            double t);
