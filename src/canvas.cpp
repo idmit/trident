@@ -15,6 +15,52 @@ void Canvas::mouseDoubleClickEvent(QMouseEvent *event) {
   repaint();
 }
 
+void Canvas::mousePressEvent(QMouseEvent *event) {
+  QPointF pos = event->localPos();
+  QPointF localPos = QPointF(pos.x() / width(), pos.y() / height());
+  size_t rad2 = radius * radius;
+
+  for (size_t i = 0; i < spline->supSize(); ++i) {
+    double dx = spline->atSup(i).x() * width() - pos.x();
+    double dy = spline->atSup(i).y() * height() - pos.y();
+    if (dx * dx + dy * dy < rad2) {
+      chosen = true;
+      chosenIdx = i;
+      pressPos = localPos;
+      break;
+    }
+  }
+}
+
+void Canvas::mouseMoveEvent(QMouseEvent *event) {
+  QPointF pos = event->localPos();
+  QPointF localPos = QPointF(pos.x() / width(), pos.y() / height());
+  double x = localPos.x(), y = localPos.y();
+
+  if (chosen) {
+    if (0 < x && x < 1) {
+      if (0 < y && y < 1) {
+        spline->resetPoint(chosenIdx, localPos);
+      } else {
+        spline->resetPointX(chosenIdx, x);
+      }
+    } else {
+      if (0 < y && y < 1) {
+        spline->resetPointY(chosenIdx, y);
+      }
+    }
+    repaint();
+  }
+}
+
+void Canvas::mouseReleaseEvent(QMouseEvent *) {
+  if (chosen) {
+    spline->undoStack->push(new MovePointCmd(chosenIdx, pressPos,
+                                             spline->atSup(chosenIdx), spline));
+    chosen = false;
+  }
+}
+
 void Canvas::paintEvent(QPaintEvent *) {
   QPainter painter(this);
   painter.setPen(QPen(Qt::red, 1, Qt::DashLine));

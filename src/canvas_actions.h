@@ -17,4 +17,17 @@ private:
   Spline *spline;
 };
 
+class MovePointCmd : public QUndoCommand {
+public:
+  MovePointCmd(size_t idx, QPointF src, QPointF dst, Spline *spline)
+      : idx(idx), src(src), dst(dst), spline(spline) {}
+  virtual void redo() { spline->resetPoint(idx, dst); }
+  virtual void undo() { spline->resetPoint(idx, src); }
+
+private:
+  size_t idx = 0;
+  QPointF src, dst;
+  Spline *spline;
+};
+
 #endif // CANVASACTIONS

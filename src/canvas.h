@@ -14,15 +14,16 @@ public:
 protected:
   void paintEvent(QPaintEvent *);
   void mouseDoubleClickEvent(QMouseEvent *);
-  /*
-   * void mousePressEvent(QMouseEvent *);
-   * void mouseMoveEvent(QMouseEvent *);
-   * void mouseReleaseEvent(QMouseEvent *);
-   */
+  void mousePressEvent(QMouseEvent *);
+  void mouseMoveEvent(QMouseEvent *event);
+  void mouseReleaseEvent(QMouseEvent *event);
 
 private:
+  bool chosen = false;
+  size_t chosenIdx;
   size_t radius = 10;
   Spline *spline = nullptr;
+  QPointF pressPos;
 
 public slots:
   void undoCmd();
