@@ -23,7 +23,7 @@ private:
   size_t chosenIdx;
   size_t radius = 10;
   Spline *spline = nullptr;
-  QPointF pressPos;
+  QPointF diffToPress, originPos;
 
 public slots:
   void undoCmd();

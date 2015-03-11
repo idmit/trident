@@ -24,9 +24,10 @@ void Canvas::mousePressEvent(QMouseEvent *event) {
     double dx = spline->atSup(i).x() * width() - pos.x();
     double dy = spline->atSup(i).y() * height() - pos.y();
     if (dx * dx + dy * dy < rad2) {
-      chosen = true;
-      chosenIdx = i;
-      pressPos = localPos;
+        chosen = true;
+        chosenIdx = i;
+        originPos = spline->atSup(i);
+        diffToPress = originPos - localPos;
       break;
     }
   }
@@ -35,12 +36,13 @@ void Canvas::mousePressEvent(QMouseEvent *event) {
 void Canvas::mouseMoveEvent(QMouseEvent *event) {
   QPointF pos = event->localPos();
   QPointF localPos = QPointF(pos.x() / width(), pos.y() / height());
-  double x = localPos.x(), y = localPos.y();
+  QPointF point = localPos + diffToPress;
+  double x = point.x(), y = point.y();
 
   if (chosen) {
     if (0 < x && x < 1) {
       if (0 < y && y < 1) {
-        spline->resetPoint(chosenIdx, localPos);
+        spline->resetPoint(chosenIdx, point);
       } else {
         spline->resetPointX(chosenIdx, x);
       }
@@ -55,7 +57,7 @@ void Canvas::mouseMoveEvent(QMouseEvent *event) {
 
 void Canvas::mouseReleaseEvent(QMouseEvent *) {
   if (chosen) {
-    spline->undoStack->push(new MovePointCmd(chosenIdx, pressPos,
+    spline->undoStack->push(new MovePointCmd(chosenIdx, originPos,
                                              spline->atSup(chosenIdx), spline));
     chosen = false;
   }
