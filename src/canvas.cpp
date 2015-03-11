@@ -24,10 +24,16 @@ void Canvas::mousePressEvent(QMouseEvent *event) {
     double dx = spline->atSup(i).x() * width() - pos.x();
     double dy = spline->atSup(i).y() * height() - pos.y();
     if (dx * dx + dy * dy < rad2) {
+      if (event->button() == Qt::LeftButton) {
         chosen = true;
         chosenIdx = i;
         originPos = spline->atSup(i);
         diffToPress = originPos - localPos;
+      } else if (event->button() == Qt::RightButton) {
+        spline->undoStack->push(
+            new RemovePointCmd(i, spline->atSup(i), spline));
+        repaint();
+      }
       break;
     }
   }

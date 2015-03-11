@@ -30,4 +30,17 @@ private:
   Spline *spline;
 };
 
+class RemovePointCmd : public QUndoCommand {
+public:
+  RemovePointCmd(size_t idx, QPointF point, Spline *spline)
+      : idx(idx), point(point), spline(spline) {}
+  virtual void redo() { spline->removeAt(idx); }
+  virtual void undo() { spline->addPoint(point); }
+
+private:
+  size_t idx = 0;
+  QPointF point;
+  Spline *spline;
+};
+
 #endif // CANVASACTIONS
