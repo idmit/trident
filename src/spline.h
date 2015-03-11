@@ -11,12 +11,15 @@ public:
 
   size_t addPoint(QPointF &point, bool rebuild = true);
   size_t addPoint(double x, double y);
-  QPointF &atSup(size_t idx);
+  QPointF atSup(size_t idx);
   void build(size_t approxParam);
   QPointF &atVal(size_t idx);
-  size_t extSize();
   void removeAt(size_t idx, bool rebuild = true);
-  size_t size();
+  void resetPoint(size_t idx, QPointF &point);
+  void resetPointX(size_t idx, double x);
+  void resetPointY(size_t idx, double y);
+  size_t supSize();
+  size_t valSize();
 
   QUndoStack *undoStack = nullptr;
 

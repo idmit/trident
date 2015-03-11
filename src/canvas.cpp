@@ -19,7 +19,7 @@ void Canvas::paintEvent(QPaintEvent *) {
   QPainter painter(this);
   painter.setPen(QPen(Qt::red, 1, Qt::DashLine));
 
-  for (size_t i = 0; spline->size() > 0 && i < spline->size() - 1; ++i) {
+  for (size_t i = 0; spline->supSize() > 0 && i < spline->supSize() - 1; ++i) {
     QPointF a = spline->atSup(i), b = spline->atSup(i + 1);
     painter.drawLine(a.x() * width(), a.y() * height(), b.x() * width(),
                      b.y() * height());
@@ -27,13 +27,13 @@ void Canvas::paintEvent(QPaintEvent *) {
 
   painter.setPen(QPen(Qt::red, 1, Qt::SolidLine));
 
-  for (size_t i = 0; i < spline->size(); ++i) {
+  for (size_t i = 0; i < spline->supSize(); ++i) {
     QPointF a = spline->atSup(i);
     painter.drawEllipse(QPointF(a.x() * width(), a.y() * height()), radius,
                         radius);
   }
 
-  for (size_t i = 0; spline->extSize() > 0 && i < spline->extSize() - 1; ++i) {
+  for (size_t i = 0; spline->valSize() > 0 && i < spline->valSize() - 1; ++i) {
     QPointF a = spline->atVal(i), b = spline->atVal(i + 1);
     painter.drawLine(a.x() * width(), a.y() * height(), b.x() * width(),
                      b.y() * height());

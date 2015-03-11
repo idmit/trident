@@ -19,7 +19,7 @@ size_t Spline::addPoint(double x, double y) {
   return support.insert(p);
 }
 
-QPointF &Spline::atSup(size_t idx) { return support[idx]; }
+QPointF Spline::atSup(size_t idx) { return support[idx]; }
 
 void Spline::build(size_t approxParam) {
   double step = 1.0 / approxParam, arg = 0;
@@ -69,8 +69,6 @@ size_t Spline::OrderedPointSet::insert(QPointF point) {
 
 QPointF &Spline::atVal(size_t idx) { return values[idx]; }
 
-size_t Spline::extSize() { return values.size(); }
-
 void Spline::removeAt(size_t idx, bool rebuild) {
   support.removeAt(idx);
   if (rebuild) {
@@ -78,4 +76,21 @@ void Spline::removeAt(size_t idx, bool rebuild) {
   }
 }
 
-size_t Spline::size() { return support.size(); }
+void Spline::resetPoint(size_t idx, QPointF &point) {
+  support[idx] = point;
+  build(approx);
+}
+
+void Spline::resetPointX(size_t idx, double x) {
+  support[idx].setX(x);
+  build(approx);
+}
+
+void Spline::resetPointY(size_t idx, double y) {
+  support[idx].setY(y);
+  build(approx);
+}
+
+size_t Spline::supSize() { return support.size(); }
+
+size_t Spline::valSize() { return values.size(); }
