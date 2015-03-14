@@ -8,40 +8,35 @@ Spline::Spline(QObject *parent) {
 
 size_t Spline::addPoint(QPointF &point, bool rebuild) {
   support.push_back(point);
-  int idx = support.size() - 1;
-  //knots.insert(idx);
   if (rebuild) {
     build(approx);
   }
-  return idx;
+  return support.size() - 1;
 }
 
 size_t Spline::addPoint(double x, double y) {
   QPointF p(x, y);
-  support.push_back(p);
-  int idx = support.size() - 1;
-  //knots.insert(idx);
-  return idx;
+  return addPoint(p);
 }
 
 QPointF Spline::atSup(size_t idx) { return support[idx]; }
 
-double Spline::BSpline(int degree, int index, double t) {
-  if (degree == 0) {
+double Spline::bSpline(int deg, int index, double t) {
+  if (deg == 0) {
     return (t >= knots[index] && t < knots[index + 1]) ? 1.0 : 0.0;
   }
-  if (knots[index] == knots[index + degree + 1]) {
+  if (knots[index] == knots[index + deg + 1]) {
     return 0.0;
   }
   double s1 = 0.0, s2 = 0.0;
-  if (knots[index + degree] != knots[index]) {
-    s1 = (t - knots[index]) / (knots[index + degree] - knots[index]) *
-         BSpline(degree - 1, index, t);
+  if (knots[index + deg] != knots[index]) {
+    s1 = (t - knots[index]) / (knots[index + deg] - knots[index]) *
+         bSpline(deg - 1, index, t);
   }
-  if (knots[index + degree + 1] != knots[index + 1]) {
-    s2 = (knots[index + degree + 1] - t) /
-         (knots[index + degree + 1] - knots[index + 1]) *
-         BSpline(degree - 1, index + 1, t);
+  if (knots[index + deg + 1] != knots[index + 1]) {
+    s2 = (knots[index + deg + 1] - t) /
+         (knots[index + deg + 1] - knots[index + 1]) *
+         bSpline(deg - 1, index + 1, t);
   }
   return s1 + s2;
 }
@@ -50,46 +45,47 @@ QPointF Spline::generalSpline(double t) {
   QPointF sum(0.0, 0.0);
   size_t supSize = support.size();
   for (size_t i = 0; i < supSize; ++i) {
-    sum += support[i] * BSpline(splineDegree, i, t);
+    sum += support[i] * bSpline(degree, i, t);
   }
   return sum;
 }
 
-void Spline::build(size_t approxParam) {
-  double arg = 0;
-  size_t supSize = support.size();
-  QList<QPointF> extendedSupport;
+void Spline::generateKnots() {
+  knots.clear();
+  knots.insert(1);
+  for (size_t i = 1; i < supSize(); ++i) {
+    QPointF p = support[i] - support[i - 1];
+    knots.insert(knots[i - 1] + QPointF::dotProduct(p, p));
+  }
 
+  int k = degree + 1;
+  for (int i = 0; i < k / 2; i++) {
+    knots.insert(1);
+  }
+  for (int i = k / 2; i < k; i++) {
+    knots.insert(knots.last());
+  }
+}
+
+void Spline::build(size_t approxParam) {
+  double arg = 1;
+  size_t supSize = support.size();
+  QPointFList vals;
 
   if (supSize > 3) {
-    int k = supSize + splineDegree + 1;
-    for (int i = 0; i < k; i++) {
-        knots.insert(i);
-    }
-   /* if (knots.size() != support.size() + splineDegree + 1) {
-      size_t k = support.size() + splineDegree + 1 - knots.size();
-      for (size_t i = 0;i < k / 2;i++)
-      {
-        knots.insert(0.0);
-      }
-      double d = knots.last();
-      for (size_t i = k / 2;i < k;i++)
-      {
-        knots.insert(d);
-      }
-    }*/
-    double step = (knots.size() - 1) / (double)approxParam;
-    for (size_t num = step; num < approxParam; ++num) {
-      extendedSupport.push_back(generalSpline(arg));
+    generateKnots();
+    double step = (knots.last() - knots.first()) / (double)approxParam;
+    for (size_t num = 1; num < approxParam - 1; ++num) {
       arg += step;
+      vals.push_back(generalSpline(arg));
     }
-    values = extendedSupport;
+    values = vals;
   } else {
     values = support;
   }
 }
 
-size_t Spline::OrderedSet::insert(double point) {
+size_t Spline::OrderedDoubleSet::insert(double point) {
   size_t idx = 0;
   for (const auto &p : (*this)) {
     if (p >= point) {

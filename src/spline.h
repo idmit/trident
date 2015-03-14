@@ -24,20 +24,23 @@ public:
   QUndoStack *undoStack = nullptr;
 
 private:
-  class OrderedSet : public QList<double> {
+  class OrderedDoubleSet : public QList<double> {
   public:
     size_t insert(double point);
   };
 
+  using QPointFList = QList<QPointF>;
+
   static constexpr size_t approx = 100;
-  OrderedSet knots;
-  QList<QPointF> support;
-  QList<QPointF> values;
+  OrderedDoubleSet knots;
+  QPointFList support;
+  QPointFList values;
 
-  static const int splineDegree = 3;
+  static constexpr size_t degree = 3;
 
-  double BSpline(int degree, int index, double t);
+  double bSpline(int deg, int index, double t);
   QPointF generalSpline(double t);
+  void generateKnots();
 };
 
 #endif // SPLINE_H
