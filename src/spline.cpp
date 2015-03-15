@@ -1,5 +1,7 @@
 #include "spline.h"
 
+#include <cmath>
+
 Spline::Spline(QObject *parent) {
   if (parent != nullptr) {
     undoStack = new QUndoStack(parent);
@@ -7,11 +9,35 @@ Spline::Spline(QObject *parent) {
 }
 
 size_t Spline::addPoint(QPointF &point, bool rebuild) {
-  support.push_back(point);
+  size_t idx = supSize();
+  for (size_t i = 0; supSize() > 0 && i < supSize() - 1; ++i) {
+    QMatrix mat;
+    QPointF l = atSup(i), r = atSup(i + 1);
+    double dy = r.y() - l.y(), dx = r.x() - l.x();
+    double angle = std::atan(dy / dx);
+    if (dx < 0) {
+      angle += M_PI;
+    }
+    QPointF rel = point - l;
+    mat.rotate(-angle * 57.2957795131);
+    rel = mat.map(rel);
+    rel += l;
+
+    double dist = std::sqrt(dx * dx + dy * dy);
+
+    if (l.x() < rel.x() && rel.x() < l.x() + dist) {
+      if (l.y() - 0.01 < rel.y() && rel.y() < l.y() + 0.01) {
+        idx = i + 1;
+        break;
+      }
+    }
+  }
+
+  support.insert(idx, point);
   if (rebuild) {
     build(approx);
   }
-  return support.size() - 1;
+  return idx;
 }
 
 size_t Spline::addPoint(double x, double y) {
