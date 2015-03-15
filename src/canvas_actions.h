@@ -35,7 +35,7 @@ public:
   RemovePointCmd(size_t idx, QPointF point, Spline *spline)
       : idx(idx), point(point), spline(spline) {}
   virtual void redo() { spline->removeAt(idx); }
-  virtual void undo() { spline->addPoint(point); }
+  virtual void undo() { spline->addPointTo(idx, point); }
 
 private:
   size_t idx = 0;

@@ -19,6 +19,14 @@ size_t Spline::addPoint(double x, double y) {
   return addPoint(p);
 }
 
+size_t Spline::addPointTo(size_t idx, QPointF &point, bool rebuild) {
+  support.insert(idx, point);
+  if (rebuild) {
+    build(approx);
+  }
+  return idx;
+}
+
 QPointF Spline::atSup(size_t idx) { return support[idx]; }
 
 double Spline::bSpline(int deg, int index, double t) {

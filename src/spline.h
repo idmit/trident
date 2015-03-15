@@ -11,6 +11,7 @@ public:
 
   size_t addPoint(QPointF &point, bool rebuild = true);
   size_t addPoint(double x, double y);
+  size_t addPointTo(size_t idx, QPointF &point, bool rebuild = true);
   QPointF atSup(size_t idx);
   void build(size_t approxParam);
   QPointF &atVal(size_t idx);
