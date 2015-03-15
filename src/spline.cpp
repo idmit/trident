@@ -1,5 +1,8 @@
 #include "spline.h"
 
+constexpr double pi = 3.1415926535;
+constexpr double rad2deg = 57.2957795131;
+
 #include <cmath>
 
 Spline::Spline(QObject *parent) {
@@ -16,10 +19,10 @@ size_t Spline::addPoint(QPointF &point, bool rebuild) {
     double dy = r.y() - l.y(), dx = r.x() - l.x();
     double angle = std::atan(dy / dx);
     if (dx < 0) {
-      angle += M_PI;
+      angle += pi;
     }
     QPointF rel = point - l;
-    mat.rotate(-angle * 57.2957795131);
+    mat.rotate(-angle * rad2deg);
     rel = mat.map(rel);
     rel += l;
 
