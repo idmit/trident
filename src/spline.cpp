@@ -57,20 +57,19 @@ QPointF Spline::atSup(size_t idx) { return support[idx]; }
 
 double Spline::bSpline(int deg, int index, double t) {
   if (deg == 0) {
-    return (t >= knots[index] && t < knots[index + 1]) ? 1.0 : 0.0;
+    return (knots[index] <= t && t < knots[index + 1]) ? 1 : 0;
   }
   if (knots[index] == knots[index + deg + 1]) {
     return 0.0;
   }
-  double s1 = 0.0, s2 = 0.0;
-  if (knots[index + deg] != knots[index]) {
-    s1 = (t - knots[index]) / (knots[index + deg] - knots[index]) *
-         bSpline(deg - 1, index, t);
+  double s1 = 0, s2 = 0;
+  if (knots[index + deg] - knots[index] > 1e-9) {
+    s1 = bSpline(deg - 1, index, t) * (t - knots[index]) /
+         (knots[index + deg] - knots[index]);
   }
-  if (knots[index + deg + 1] != knots[index + 1]) {
-    s2 = (knots[index + deg + 1] - t) /
-         (knots[index + deg + 1] - knots[index + 1]) *
-         bSpline(deg - 1, index + 1, t);
+  if (knots[index + deg + 1] - knots[index + 1] > 1e-9) {
+    s2 = bSpline(deg - 1, index + 1, t) * (knots[index + deg + 1] - t) /
+         (knots[index + deg + 1] - knots[index + 1]);
   }
   return s1 + s2;
 }
