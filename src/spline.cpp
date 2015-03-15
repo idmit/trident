@@ -62,9 +62,7 @@ double Spline::bSpline(int deg, int index, double t) {
   if (deg == 0) {
     return (knots[index] <= t && t < knots[index + 1]) ? 1 : 0;
   }
-  if (knots[index] == knots[index + deg + 1]) {
-    return 0.0;
-  }
+
   double s1 = 0, s2 = 0;
   if (knots[index + deg] - knots[index] > 1e-9) {
     s1 = bSpline(deg - 1, index, t) * (t - knots[index]) /
@@ -88,16 +86,17 @@ QPointF Spline::generalSpline(double t) {
 
 void Spline::generateKnots() {
   knots.clear();
+  size_t n = supSize() - 1;
 
   double L = 0;
-  for (size_t i = 1; i < supSize(); ++i) {
-    QPointF p = support[i] - support[i - 1];
+  for (size_t i = 0; i < n; ++i) {
+    QPointF p = support[i + 1] - support[i];
     L += std::sqrt(QPointF::dotProduct(p, p));
   }
 
   QList<double> ts;
   ts << 0;
-  for (size_t i = 1; i < supSize() - 1; ++i) {
+  for (size_t i = 1; i < n; ++i) {
     QPointF p = support[i] - support[i - 1];
     ts << (ts[i - 1] + std::sqrt(QPointF::dotProduct(p, p)) / L);
   }
@@ -110,24 +109,25 @@ void Spline::generateKnots() {
     S += ts.at(i);
   }
   knots.insert(S / degree);
-  for (size_t j = 2; j < supSize() - degree; j++) {
-    knots.append(knots.at(j + degree - 1) +
-                 (ts.at(j + degree - 1) - ts.at(j - 1)) / degree);
+  for (size_t j = 1; j < n - degree + 1; j++) {
+    knots.append(knots.at(j + degree) +
+                 (ts.at(j + degree) - ts.at(j)) / degree);
   }
-  for (size_t i = 0; i < degree + 1; i++) {
+  for (size_t i = 0; i < degree + 2; i++) {
     knots.append(1);
   }
 }
 
 void Spline::build(size_t approxParam) {
   double arg = 0;
-  size_t supSize = support.size();
+  size_t n = supSize() - 1;
   QPointFList vals;
 
-  if (supSize > 3) {
+  if (n > 2) {
     generateKnots();
-    double step = (knots.last() - knots.first()) / (double)approxParam;
-    for (size_t num = 1; num < approxParam - 1; ++num) {
+    arg = knots[degree];
+    double step = (knots[n] - knots[degree]) / (double)approxParam;
+    for (size_t num = 0; num < approxParam; ++num) {
       arg += step;
       vals.push_back(generalSpline(arg));
     }
