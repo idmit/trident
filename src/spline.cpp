@@ -119,6 +119,11 @@ void Spline::build(size_t approxParam) {
   }
 }
 
+size_t Spline::OrderedDoubleSet::append(double point) {
+  QList<double>::push_back(point);
+  return QList<double>::size() - 1;
+}
+
 size_t Spline::OrderedDoubleSet::insert(double point) {
   size_t idx = 0;
   for (const auto &p : (*this)) {

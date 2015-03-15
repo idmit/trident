@@ -27,6 +27,7 @@ public:
 private:
   class OrderedDoubleSet : public QList<double> {
   public:
+    size_t append(double point);
     size_t insert(double point);
   };
 
