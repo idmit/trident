@@ -10,7 +10,11 @@ greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
 TARGET = Trident
 TEMPLATE = app
-QMAKE_CXXFLAGS += -std=c++11 -stdlib=libc++
+QMAKE_CXXFLAGS += -std=c++11
+
+macx {
+    QMAKE_CXXFLAGS += -stdlib=libc++
+}
 
 SOURCES += main.cpp\
         mainwindow.cpp \
