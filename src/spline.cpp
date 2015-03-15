@@ -85,23 +85,39 @@ QPointF Spline::generalSpline(double t) {
 
 void Spline::generateKnots() {
   knots.clear();
-  knots.insert(1);
+
+  double L = 0;
   for (size_t i = 1; i < supSize(); ++i) {
     QPointF p = support[i] - support[i - 1];
-    knots.insert(knots[i - 1] + QPointF::dotProduct(p, p));
+    L += std::sqrt(QPointF::dotProduct(p, p));
   }
 
-  int k = degree + 1;
-  for (int i = 0; i < k / 2; i++) {
-    knots.insert(1);
+  QList<double> ts;
+  ts << 0;
+  for (size_t i = 1; i < supSize() - 1; ++i) {
+    QPointF p = support[i] - support[i - 1];
+    ts << (ts[i - 1] + std::sqrt(QPointF::dotProduct(p, p)) / L);
   }
-  for (int i = k / 2; i < k; i++) {
-    knots.insert(knots.last());
+  ts << 1;
+
+  double S = 0;
+  knots.append(0);
+  for (size_t i = 1; i < degree + 1; ++i) {
+    knots.append(0);
+    S += ts.at(i);
+  }
+  knots.insert(S / degree);
+  for (size_t j = 2; j < supSize() - degree; j++) {
+    knots.append(knots.at(j + degree - 1) +
+                 (ts.at(j + degree - 1) - ts.at(j - 1)) / degree);
+  }
+  for (size_t i = 0; i < degree + 1; i++) {
+    knots.append(1);
   }
 }
 
 void Spline::build(size_t approxParam) {
-  double arg = 1;
+  double arg = 0;
   size_t supSize = support.size();
   QPointFList vals;
 
