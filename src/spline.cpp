@@ -81,7 +81,7 @@ void Spline::build(size_t approxParam) {
     }
     values = vals;
   } else {
-    values = support;
+    values.clear();
   }
 }
 
