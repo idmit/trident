@@ -78,19 +78,28 @@ void Canvas::paintEvent(QPaintEvent *) {
 
   painter.setPen(QPen(Qt::gray, 1, Qt::DashLine));
 
-  for (size_t i = 0; spline->supSize() > 0 && i < spline->supSize() - 1; ++i) {
-    QPointF a = spline->atSup(i), b = spline->atSup(i + 1);
-    painter.drawLine(a.x() * w, a.y() * h, b.x() * w, b.y() * h);
-  }
+  if (spline->supSize() > 0) {
+    for (size_t i = 0; i < spline->supSize() - 1; ++i) {
+      QPointF a = spline->atSup(i), b = spline->atSup(i + 1);
+      painter.drawLine(a.x() * w, a.y() * h, b.x() * w, b.y() * h);
+    }
+    if (spline->supSize() > 4) {
+      QPointF a = spline->atSup(spline->supSize() - 1), b = spline->atSup(0);
+      painter.drawLine(a.x() * w, a.y() * h, b.x() * w, b.y() * h);
+    }
 
-  painter.setPen(QPen(Qt::gray, 1, Qt::SolidLine));
+    painter.setPen(QPen(Qt::gray, 1, Qt::SolidLine));
 
-  for (size_t i = 0; i < spline->supSize(); ++i) {
-    QPointF a = spline->atSup(i);
+    for (size_t i = 0; i < spline->supSize() - 1; ++i) {
+      QPointF a = spline->atSup(i);
+      painter.drawEllipse(QPointF(a.x() * w, a.y() * h), radius, radius);
+    }
+    painter.setPen(QPen(Qt::blue, 1, Qt::SolidLine));
+    QPointF a = spline->atSup(spline->supSize() - 1);
     painter.drawEllipse(QPointF(a.x() * w, a.y() * h), radius, radius);
   }
 
-  painter.setPen(QPen(Qt::red, 1, Qt::SolidLine));
+  painter.setPen(QPen(Qt::black, 1, Qt::SolidLine));
 
   for (size_t i = 0; spline->valSize() > 0 && i < spline->valSize() - 1; ++i) {
     QPointF a = spline->atVal(i), b = spline->atVal(i + 1);

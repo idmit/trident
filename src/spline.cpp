@@ -76,9 +76,9 @@ double Spline::bSpline(int deg, int index, double t) {
 }
 
 QPointF Spline::generalSpline(double t) {
-  QPointF sum(0.0, 0.0);
-  size_t supSize = support.size();
-  for (size_t i = 0; i < supSize; ++i) {
+  QPointF sum(0, 0);
+  size_t n = supSize() - 1;
+  for (size_t i = 0; i < n + 1; ++i) {
     sum += support[i] * bSpline(degree, i, t);
   }
   return sum;
@@ -86,45 +86,27 @@ QPointF Spline::generalSpline(double t) {
 
 void Spline::generateKnots() {
   knots.clear();
+
+  for (size_t i = 0; i < degree + 1; ++i) {
+    support.append(support[i]);
+  }
+
   size_t n = supSize() - 1;
 
-  double L = 0;
-  for (size_t i = 0; i < n; ++i) {
-    QPointF p = support[i + 1] - support[i];
-    L += std::sqrt(QPointF::dotProduct(p, p));
-  }
-
-  QList<double> ts;
-  ts << 0;
-  for (size_t i = 1; i < n; ++i) {
-    QPointF p = support[i] - support[i - 1];
-    ts << (ts[i - 1] + std::sqrt(QPointF::dotProduct(p, p)) / L);
-  }
-  ts << 1;
-
-  double S = 0;
   knots.append(0);
-  for (size_t i = 1; i < degree + 1; ++i) {
-    knots.append(0);
-    S += ts.at(i);
+  for (size_t i = 1; i < n + degree + 1; i++) {
+    knots.append((double)i / (n + degree + 1));
   }
-  knots.insert(S / degree);
-  for (size_t j = 1; j < n - degree + 1; j++) {
-    knots.append(knots.at(j + degree) +
-                 (ts.at(j + degree) - ts.at(j)) / degree);
-  }
-  for (size_t i = 0; i < degree + 2; i++) {
-    knots.append(1);
-  }
+  knots.append(1);
 }
 
 void Spline::build(size_t approxParam) {
   double arg = 0;
-  size_t n = supSize() - 1;
   QPointFList vals;
 
-  if (n > 2) {
+  if (supSize() > 4) {
     generateKnots();
+    size_t n = supSize() - 1;
     arg = knots[degree];
     double step = (knots[n] - knots[degree]) / (double)approxParam;
     for (size_t num = 0; num < approxParam; ++num) {
@@ -132,6 +114,9 @@ void Spline::build(size_t approxParam) {
       vals.push_back(generalSpline(arg));
     }
     values = vals;
+    for (size_t i = 0; i < degree + 1; ++i) {
+      support.pop_back();
+    }
   } else {
     values.clear();
   }
