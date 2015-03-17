@@ -8,6 +8,24 @@ Canvas::Canvas(QWidget *parent) : QWidget(parent) {}
 
 void Canvas::setSpline(Spline *value) { spline = value; }
 
+void Canvas::drawGrid(QPainter &painter, size_t cellNum, size_t cellsInThick) {
+  int w = width(), h = height();
+  int grayTone = 240, lineWidth = 0;
+  QColor color(grayTone, grayTone, grayTone);
+
+  painter.fillRect(QRectF(0, 0, w, h), QBrush(QColor("white")));
+  for (size_t i = 0; i < cellNum; ++i) {
+    if ((i + 1) % cellsInThick == 0) {
+      lineWidth = 1;
+    } else {
+      lineWidth = 2;
+    }
+    painter.setPen(QPen(color, lineWidth, Qt::SolidLine));
+    painter.drawLine(0, i * h / cellNum, w, i * h / cellNum);
+    painter.drawLine(i * w / cellNum, 0, i * w / cellNum, h);
+  }
+}
+
 void Canvas::mouseDoubleClickEvent(QMouseEvent *event) {
   QPointF pos = event->localPos();
   QPointF localPos = QPointF(pos.x() / width(), pos.y() / height());
@@ -71,10 +89,9 @@ void Canvas::mouseReleaseEvent(QMouseEvent *) {
 
 void Canvas::paintEvent(QPaintEvent *) {
   QPainter painter(this);
-
   int w = width(), h = height();
 
-  painter.fillRect(QRectF(0, 0, w, h), QBrush(QColor("white")));
+  drawGrid(painter);
 
   painter.setPen(QPen(Qt::gray, 1, Qt::DashLine));
 

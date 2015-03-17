@@ -24,6 +24,8 @@ private:
   size_t radius = 10;
   Spline *spline = nullptr;
   QPointF diffToPress, originPos;
+  void drawGrid(QPainter &painter, size_t cellNum = 20,
+                size_t cellsInThick = 2);
 
 public slots:
   void undoCmd();
