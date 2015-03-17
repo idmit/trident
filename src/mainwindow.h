@@ -23,6 +23,7 @@ private:
   QTabWidget *qTabWidget;
 
 public slots:
+  void addCurve();
   void undoCmd();
 };
 

@@ -27,6 +27,8 @@ void MainWindow::initMenuBar() {
   menuFile->addAction("Exit");
 
   QMenu *menuEdit = new QMenu("Edit", this);
+  menuEdit->addAction("Add Curve", this, SLOT(addCurve()),
+                      QKeySequence(Qt::CTRL + Qt::Key_A));
   menuEdit->addAction("Undo", this, SLOT(undoCmd()),
                       QKeySequence(Qt::CTRL + Qt::Key_Z));
   menuEdit->addAction("Copy");
@@ -39,6 +41,12 @@ void MainWindow::initMenuBar() {
 }
 
 MainWindow::~MainWindow() { delete ui; }
+
+void MainWindow::addCurve() {
+  TabWidget *currentTab =
+      reinterpret_cast<TabWidget *>(qTabWidget->currentWidget());
+  currentTab->addCurve();
+}
 
 void MainWindow::undoCmd() {
   TabWidget *currentTab =

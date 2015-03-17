@@ -17,11 +17,12 @@ public:
 
 private:
   Canvas *canvas;
-  QHash<QString, Spline> map;
+  QHash<QString, SplineGroup> map;
   QListWidget *list;
 
 public slots:
   void reloadCanvas(const QString &currentText);
+  void addCurve();
   void undoCmd();
 };
 

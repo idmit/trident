@@ -8,9 +8,9 @@ TabWidget::TabWidget(QWidget *parent) : QWidget(parent) {
   QHBoxLayout *layout = new QHBoxLayout;
   QSplitter *splitter = new QSplitter(this);
 
-  map["A"] = Spline(this);
-  map["B"] = Spline(this);
-  map["C"] = Spline(this);
+  map.insert("A", SplineGroup());
+  map.insert("B", SplineGroup());
+  map.insert("C", SplineGroup());
 
   list = new QListWidget(this);
   list->setSelectionMode(QAbstractItemView::SingleSelection);
@@ -36,8 +36,9 @@ TabWidget::TabWidget(QWidget *parent) : QWidget(parent) {
 TabWidget::~TabWidget() {}
 
 void TabWidget::reloadCanvas(const QString &currentText) {
-  canvas->setSpline(&map[currentText]);
+  canvas->setActiveGroup(&map[currentText]);
   canvas->repaint();
 }
 
+void TabWidget::addCurve() { canvas->addSpline(Spline()); }
 void TabWidget::undoCmd() { canvas->undoCmd(); }
