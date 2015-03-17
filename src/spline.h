@@ -3,14 +3,13 @@
 
 #include <QPainter>
 #include <QPointF>
-#include <QUndoStack>
 
 class Spline {
 public:
-  explicit Spline(QObject *parent = nullptr);
+  explicit Spline();
 
-  size_t addPoint(QPointF &point, bool rebuild = true);
-  size_t addPoint(double x, double y);
+  size_t addPoint(size_t idx, QPointF &point, bool rebuild = true);
+  size_t addPoint(size_t idx, double x, double y);
   size_t addPointTo(size_t idx, QPointF &point, bool rebuild = true);
   QPointF atSup(size_t idx);
   void build(size_t approxParam);
@@ -21,8 +20,6 @@ public:
   void resetPointY(size_t idx, double y);
   size_t supSize();
   size_t valSize();
-
-  QUndoStack *undoStack = nullptr;
 
 private:
   class OrderedDoubleSet : public QList<double> {

@@ -3,13 +3,14 @@
 
 #include <QWidget>
 
-#include "spline.h"
+#include "splinegroup.h"
 
 class Canvas : public QWidget {
   Q_OBJECT
 public:
   explicit Canvas(QWidget *parent = 0);
-  void setSpline(Spline *spline);
+  void setActiveSplineIdx(size_t idx);
+  void setActiveGroup(SplineGroup *group);
 
 protected:
   void paintEvent(QPaintEvent *);
@@ -22,12 +23,15 @@ private:
   bool chosen = false;
   size_t chosenIdx;
   size_t radius = 10;
-  Spline *spline = nullptr;
+  SplineGroup *activeGroup = nullptr;
   QPointF diffToPress, originPos;
   void drawGrid(QPainter &painter, size_t cellNum = 20,
                 size_t cellsInThick = 2);
+  void drawSplines(QPainter &painter);
+  size_t newPointIdx(QPointF &point);
 
 public slots:
+  void addSpline(Spline spline);
   void undoCmd();
 };
 

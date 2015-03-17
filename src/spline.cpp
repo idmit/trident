@@ -1,41 +1,14 @@
 #include "spline.h"
 
-constexpr double pi = 3.1415926535;
-constexpr double rad2deg = 57.2957795131;
-
-#include <cmath>
-
-Spline::Spline(QObject *parent) {
-  if (parent != nullptr) {
-    undoStack = new QUndoStack(parent);
-  }
+Spline::Spline() {
+  QPointFList initialPoints = {
+    { 0.4, 0.4 }, { 0.4, 0.6 }, { 0.5, 0.6 }, { 0.6, 0.6 }, { 0.6, 0.4 }
+  };
+  support.append(initialPoints);
+  build(approx);
 }
 
-size_t Spline::addPoint(QPointF &point, bool rebuild) {
-  size_t idx = supSize();
-  for (size_t i = 0; supSize() > 0 && i < supSize() - 1; ++i) {
-    QMatrix mat;
-    QPointF l = atSup(i), r = atSup(i + 1);
-    double dy = r.y() - l.y(), dx = r.x() - l.x();
-    double angle = std::atan(dy / dx);
-    if (dx < 0) {
-      angle += pi;
-    }
-    QPointF rel = point - l;
-    mat.rotate(-angle * rad2deg);
-    rel = mat.map(rel);
-    rel += l;
-
-    double dist = std::sqrt(dx * dx + dy * dy);
-
-    if (l.x() < rel.x() && rel.x() < l.x() + dist) {
-      if (l.y() - 0.01 < rel.y() && rel.y() < l.y() + 0.01) {
-        idx = i + 1;
-        break;
-      }
-    }
-  }
-
+size_t Spline::addPoint(size_t idx, QPointF &point, bool rebuild) {
   support.insert(idx, point);
   if (rebuild) {
     build(approx);
@@ -43,9 +16,9 @@ size_t Spline::addPoint(QPointF &point, bool rebuild) {
   return idx;
 }
 
-size_t Spline::addPoint(double x, double y) {
+size_t Spline::addPoint(size_t idx, double x, double y) {
   QPointF p(x, y);
-  return addPoint(p);
+  return addPoint(idx, p);
 }
 
 size_t Spline::addPointTo(size_t idx, QPointF &point, bool rebuild) {
