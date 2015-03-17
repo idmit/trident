@@ -16,6 +16,7 @@ public:
   size_t getIdx();
   void pop();
   void removeAt(size_t idx);
+  void resetAt(size_t idx, Spline spline);
   void setIdx(size_t idx);
   size_t size();
 

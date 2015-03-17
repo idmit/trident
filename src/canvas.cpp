@@ -1,3 +1,4 @@
+#include <QApplication>
 #include <QMouseEvent>
 #include <QPainter>
 
@@ -81,16 +82,20 @@ void Canvas::mousePressEvent(QMouseEvent *event) {
 
   for (size_t k = 0; k < activeGroup->size(); ++k) {
     Spline spline = activeGroup->get(k);
-
     for (size_t i = 0; i < spline.supSize(); ++i) {
       double dx = spline.atSup(i).x() * width() - pos.x();
       double dy = spline.atSup(i).y() * height() - pos.y();
       if (dx * dx + dy * dy < rad2) {
         if (event->button() == Qt::LeftButton) {
           setActiveSplineIdx(k);
-          chosen = true;
-          chosenIdx = i;
+          moving = true;
+          pressedPointIdx = i;
           originPos = spline.atSup(i);
+          movingCurve = false;
+          if (QApplication::keyboardModifiers() == Qt::ShiftModifier) {
+            originSpline = spline;
+            movingCurve = true;
+          }
           diffToPress = originPos - localPos;
           repaint();
         } else if (event->button() == Qt::RightButton) {
@@ -106,34 +111,106 @@ void Canvas::mousePressEvent(QMouseEvent *event) {
   }
 }
 
+char Canvas::movedCurveFits(QPointF &point, QList<QPointF> *newPositions) {
+  QPointF diff = point - originPos;
+  QList<char> resetOptions;
+  for (size_t i = 0; i < activeGroup->getActive().supSize(); ++i) {
+    QPointF newPos = originSpline.atSup(i) + diff;
+    double x = newPos.x(), y = newPos.y();
+    if (0 < x && x < 1) {
+      if (0 < y && y < 1) {
+        resetOptions.append('b');
+      } else {
+        resetOptions.append('x');
+      }
+    } else {
+      if (0 < y && y < 1) {
+        resetOptions.append('y');
+      } else {
+        return 'n';
+      }
+    }
+    newPositions->append(newPos);
+  }
+
+  bool resetX = false, resetY = false;
+  for (int i = 0; i < resetOptions.size(); ++i) {
+    if (resetOptions[i] == 'x') {
+      resetX = true;
+    } else if (resetOptions[i] == 'y') {
+      resetY = true;
+    }
+    if (resetX && resetY) {
+      return 'n';
+    }
+  }
+  if (resetX) {
+    return 'x';
+  }
+  if (resetY) {
+    return 'y';
+  }
+  return 'b';
+}
+
 void Canvas::mouseMoveEvent(QMouseEvent *event) {
   QPointF pos = event->localPos();
   QPointF localPos = QPointF(pos.x() / width(), pos.y() / height());
   QPointF point = localPos + diffToPress;
   double x = point.x(), y = point.y();
 
-  if (chosen) {
-    if (0 < x && x < 1) {
-      if (0 < y && y < 1) {
-        activeGroup->getActive().resetPoint(chosenIdx, point);
-      } else {
-        activeGroup->getActive().resetPointX(chosenIdx, x);
+  if (moving) {
+    if (movingCurve) {
+      QList<QPointF> newPositions;
+      switch (movedCurveFits(point, &newPositions)) {
+        case 'b':
+          for (size_t i = 0; i < activeGroup->getActive().supSize(); ++i) {
+            activeGroup->getActive().resetPoint(i, newPositions.at(i));
+          }
+          break;
+        case 'x':
+          for (size_t i = 0; i < activeGroup->getActive().supSize(); ++i) {
+            activeGroup->getActive().resetPointX(i, newPositions.at(i).x());
+          }
+          break;
+        case 'y':
+          for (size_t i = 0; i < activeGroup->getActive().supSize(); ++i) {
+            activeGroup->getActive().resetPointY(i, newPositions.at(i).y());
+          }
+          break;
+        default:
+          break;
       }
     } else {
-      if (0 < y && y < 1) {
-        activeGroup->getActive().resetPointY(chosenIdx, y);
+      if (0 < x && x < 1) {
+        if (0 < y && y < 1) {
+          activeGroup->getActive().resetPoint(pressedPointIdx, point);
+        } else {
+          activeGroup->getActive().resetPointX(pressedPointIdx, x);
+        }
+      } else {
+        if (0 < y && y < 1) {
+          activeGroup->getActive().resetPointY(pressedPointIdx, y);
+        }
       }
     }
-    repaint();
   }
+  repaint();
 }
 
 void Canvas::mouseReleaseEvent(QMouseEvent *) {
-  if (chosen && originPos != activeGroup->getActive().atSup(chosenIdx)) {
-    activeGroup->undoStack->push(new MovePointCmd(
-        chosenIdx, originPos, activeGroup->getActive().atSup(chosenIdx),
-        activeGroup));
-    chosen = false;
+  if (moving && originPos != activeGroup->getActive().atSup(pressedPointIdx)) {
+    if (movingCurve) {
+      activeGroup->undoStack->push(
+          new MoveCurveCmd(activeGroup->getIdx(), originSpline,
+                           activeGroup->getActive(), activeGroup));
+      movingCurve = false;
+    } else {
+      activeGroup->undoStack->push(new MovePointCmd(
+          pressedPointIdx, originPos,
+          activeGroup->getActive().atSup(pressedPointIdx), activeGroup));
+    }
+    moving = false;
   }
 }
 

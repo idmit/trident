@@ -15,7 +15,7 @@ public:
   void build(size_t approxParam);
   QPointF &atVal(size_t idx);
   void removeAt(size_t idx, bool rebuild = true);
-  void resetPoint(size_t idx, QPointF &point);
+  void resetPoint(size_t idx, QPointF point);
   void resetPointX(size_t idx, double x);
   void resetPointY(size_t idx, double y);
   size_t supSize();

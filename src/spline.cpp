@@ -121,7 +121,7 @@ void Spline::removeAt(size_t idx, bool rebuild) {
   }
 }
 
-void Spline::resetPoint(size_t idx, QPointF &point) {
+void Spline::resetPoint(size_t idx, QPointF point) {
   support[idx] = point;
   build(approx);
 }

@@ -69,6 +69,19 @@ private:
   SplineGroup *group;
 };
 
+class MoveCurveCmd : public QUndoCommand {
+public:
+  MoveCurveCmd(size_t idx, Spline src, Spline dst, SplineGroup *group)
+      : idx(idx), src(src), dst(dst), group(group) {}
+  virtual void redo() { group->resetAt(idx, dst); }
+  virtual void undo() { group->resetAt(idx, src); }
+
+private:
+  size_t idx = 0;
+  Spline src, dst;
+  SplineGroup *group;
+};
+
 class RemoveCurveCmd : public QUndoCommand {
 public:
   RemoveCurveCmd(SplineGroup *group)

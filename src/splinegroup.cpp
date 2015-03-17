@@ -22,6 +22,10 @@ void SplineGroup::insertAt(size_t idx, Spline spline) {
   splines.insert(idx, spline);
 }
 
+void SplineGroup::resetAt(size_t idx, Spline spline) {
+  splines[idx] = spline;
+}
+
 void SplineGroup::removeAt(size_t idx) {
   splines.removeAt(idx);
   if (activeIdx == (size_t)splines.size()) {
