@@ -23,6 +23,10 @@ private:
 public slots:
   void reloadCanvas(const QString &currentText);
   void addCurve();
+  void copyCurve();
+  void pasteCurve();
+  void removeCurve();
+  void redoCmd();
   void undoCmd();
 };
 

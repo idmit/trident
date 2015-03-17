@@ -22,16 +22,24 @@ protected:
 private:
   bool chosen = false;
   size_t chosenIdx;
+  QPointF diffToPress, originPos;
+
   size_t radius = 10;
   SplineGroup *activeGroup = nullptr;
-  QPointF diffToPress, originPos;
+
+  Spline copiedSpline = Spline();
+
   void drawGrid(QPainter &painter, size_t cellNum = 20,
                 size_t cellsInThick = 2);
   void drawSplines(QPainter &painter);
   size_t newPointIdx(QPointF &point);
 
 public slots:
-  void addSpline(Spline spline);
+  void addCurve(Spline spline);
+  void copyCurve();
+  void pasteCurve();
+  void removeCurve();
+  void redoCmd();
   void undoCmd();
 };
 

@@ -40,5 +40,10 @@ void TabWidget::reloadCanvas(const QString &currentText) {
   canvas->repaint();
 }
 
-void TabWidget::addCurve() { canvas->addSpline(Spline()); }
+void TabWidget::addCurve() { canvas->addCurve(Spline()); }
+void TabWidget::copyCurve() { canvas->copyCurve(); }
+void TabWidget::pasteCurve() { canvas->pasteCurve(); }
+void TabWidget::removeCurve() { canvas->removeCurve(); }
+
+void TabWidget::redoCmd() { canvas->redoCmd(); }
 void TabWidget::undoCmd() { canvas->undoCmd(); }

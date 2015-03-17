@@ -10,9 +10,12 @@ class SplineGroup {
 public:
   SplineGroup();
   void add(Spline spline);
+  void insertAt(size_t idx, Spline spline);
   Spline &get(size_t idx);
   Spline &getActive();
   size_t getIdx();
+  void pop();
+  void removeAt(size_t idx);
   void setIdx(size_t idx);
   size_t size();
 

@@ -57,4 +57,29 @@ private:
   SplineGroup *group;
 };
 
+class AddCurveCmd : public QUndoCommand {
+public:
+  AddCurveCmd(Spline spline, SplineGroup *group)
+      : spline(spline), group(group) {}
+  virtual void redo() { group->add(spline); }
+  virtual void undo() { group->pop(); }
+
+private:
+  Spline spline;
+  SplineGroup *group;
+};
+
+class RemoveCurveCmd : public QUndoCommand {
+public:
+  RemoveCurveCmd(SplineGroup *group)
+      : idx(group->getIdx()), spline(group->getActive()), group(group) {}
+  virtual void redo() { group->removeAt(idx); }
+  virtual void undo() { group->insertAt(idx, spline); }
+
+private:
+  size_t idx;
+  Spline spline;
+  SplineGroup *group;
+};
+
 #endif // CANVASACTIONS

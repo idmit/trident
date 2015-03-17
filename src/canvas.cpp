@@ -129,7 +129,7 @@ void Canvas::mouseMoveEvent(QMouseEvent *event) {
 }
 
 void Canvas::mouseReleaseEvent(QMouseEvent *) {
-  if (chosen) {
+  if (chosen && originPos != activeGroup->getActive().atSup(chosenIdx)) {
     activeGroup->undoStack->push(new MovePointCmd(
         chosenIdx, originPos, activeGroup->getActive().atSup(chosenIdx),
         activeGroup));
@@ -198,8 +198,30 @@ size_t Canvas::newPointIdx(QPointF &point) {
   return idx;
 }
 
-void Canvas::addSpline(Spline spline) {
-  activeGroup->add(spline);
+void Canvas::addCurve(Spline spline) {
+  activeGroup->undoStack->push(new AddCurveCmd(spline, activeGroup));
+  repaint();
+}
+
+void Canvas::copyCurve() {
+  copiedSpline = activeGroup->getActive();
+  repaint();
+}
+
+void Canvas::pasteCurve() {
+  activeGroup->undoStack->push(new AddCurveCmd(copiedSpline, activeGroup));
+  repaint();
+}
+
+void Canvas::removeCurve() {
+  if (activeGroup->size() > 1) {
+    activeGroup->undoStack->push(new RemoveCurveCmd(activeGroup));
+  }
+  repaint();
+}
+
+void Canvas::redoCmd() {
+  activeGroup->undoStack->redo();
   repaint();
 }
 

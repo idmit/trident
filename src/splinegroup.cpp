@@ -11,6 +11,24 @@ void SplineGroup::add(Spline spline) {
   setIdx(splines.size() - 1);
 }
 
+void SplineGroup::pop() {
+  splines.pop_back();
+  if (activeIdx == (size_t)splines.size()) {
+    activeIdx -= 1;
+  }
+}
+
+void SplineGroup::insertAt(size_t idx, Spline spline) {
+  splines.insert(idx, spline);
+}
+
+void SplineGroup::removeAt(size_t idx) {
+  splines.removeAt(idx);
+  if (activeIdx == (size_t)splines.size()) {
+    activeIdx -= 1;
+  }
+}
+
 Spline &SplineGroup::get(size_t idx) { return splines[idx]; }
 
 Spline &SplineGroup::getActive() { return splines[activeIdx]; }
