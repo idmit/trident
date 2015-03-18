@@ -27,21 +27,23 @@ void MainWindow::initMenuBar() {
   menuFile->addAction("Save Project", this, SLOT(saveProject()),
                       QKeySequence(Qt::CTRL + Qt::Key_S));
 
+  menuFile->addSeparator();
   menuFile->addAction("Add Curve", this, SLOT(addCurve()),
                       QKeySequence(Qt::CTRL + Qt::Key_A));
   menuFile->addAction("Exit");
 
   QMenu *menuEdit = new QMenu("Edit", this);
-  menuEdit->addAction("Redo", this, SLOT(undoCmd()),
-                      QKeySequence(Qt::CTRL + Qt::Key_Z));
-  menuEdit->addAction("Undo", this, SLOT(redoCmd()),
-                      QKeySequence(Qt::CTRL + Qt::SHIFT + Qt::Key_Z));
   menuEdit->addAction("Copy Curve", this, SLOT(copyCurve()),
                       QKeySequence(Qt::CTRL + Qt::Key_C));
   menuEdit->addAction("Paste Curve", this, SLOT(pasteCurve()),
                       QKeySequence(Qt::CTRL + Qt::Key_V));
   menuEdit->addAction("Remove Curve", this, SLOT(removeCurve()),
                       QKeySequence(Qt::Key_Backspace));
+  menuEdit->addSeparator();
+  menuEdit->addAction("Redo", this, SLOT(undoCmd()),
+                      QKeySequence(Qt::CTRL + Qt::Key_Z));
+  menuEdit->addAction("Undo", this, SLOT(redoCmd()),
+                      QKeySequence(Qt::CTRL + Qt::SHIFT + Qt::Key_Z));
 
   QMenu *menuAbout = new QMenu("Help", this);
   menuEdit->addAction("About");
