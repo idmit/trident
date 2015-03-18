@@ -7,6 +7,7 @@
 #include <QWidget>
 
 #include "canvas.h"
+#include "iocontroller.h"
 #include "spline.h"
 
 class TabWidget : public QWidget {
@@ -26,6 +27,10 @@ public slots:
   void copyCurve();
   void pasteCurve();
   void removeCurve();
+
+  void openProject(IOController &ioController);
+  void saveProject(IOController &ioController);
+
   void redoCmd();
   void undoCmd();
 };

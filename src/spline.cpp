@@ -139,3 +139,13 @@ void Spline::resetPointY(size_t idx, double y) {
 size_t Spline::supSize() { return support.size(); }
 
 size_t Spline::valSize() { return values.size(); }
+
+QDataStream &operator<<(QDataStream &stream, const Spline &spline) {
+  stream << spline.support;
+  return stream;
+}
+
+QDataStream &operator>>(QDataStream &stream, Spline &spline) {
+  stream >> spline.support;
+  return stream;
+}

@@ -22,8 +22,12 @@ void SplineGroup::insertAt(size_t idx, Spline spline) {
   splines.insert(idx, spline);
 }
 
-void SplineGroup::resetAt(size_t idx, Spline spline) {
-  splines[idx] = spline;
+void SplineGroup::resetAt(size_t idx, Spline spline) { splines[idx] = spline; }
+
+void SplineGroup::rebuildAll() {
+  for (int i = 0; i < splines.size(); ++i) {
+    splines[i].build();
+  }
 }
 
 void SplineGroup::removeAt(size_t idx) {
@@ -38,3 +42,13 @@ Spline &SplineGroup::get(size_t idx) { return splines[idx]; }
 Spline &SplineGroup::getActive() { return splines[activeIdx]; }
 
 size_t SplineGroup::size() { return splines.size(); }
+
+QDataStream &operator<<(QDataStream &stream, const SplineGroup &group) {
+  stream << group.splines;
+  return stream;
+}
+
+QDataStream &operator>>(QDataStream &stream, SplineGroup &group) {
+  stream >> group.splines;
+  return stream;
+}

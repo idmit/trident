@@ -9,6 +9,7 @@ class Canvas : public QWidget {
   Q_OBJECT
 public:
   explicit Canvas(QWidget *parent = 0);
+  SplineGroup *getActiveGroup();
   void setActiveSplineIdx(size_t idx);
   void setActiveGroup(SplineGroup *group);
 
@@ -21,7 +22,7 @@ protected:
 
 private:
   bool moving = false;
-  size_t pressedPointIdx;
+  size_t pressedPointIdx = 0;
   QPointF diffToPress, originPos;
   bool movingCurve = false;
   Spline originSpline;

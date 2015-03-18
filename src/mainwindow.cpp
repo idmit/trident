@@ -22,10 +22,13 @@ void MainWindow::initMenuBar() {
   QMenuBar *menuBar = this->menuBar();
 
   QMenu *menuFile = new QMenu("File", this);
-  menuFile->addAction("Open...");
+  menuFile->addAction("Open Project", this, SLOT(openProject()),
+                      QKeySequence(Qt::CTRL + Qt::Key_O));
+  menuFile->addAction("Save Project", this, SLOT(saveProject()),
+                      QKeySequence(Qt::CTRL + Qt::Key_S));
+
   menuFile->addAction("Add Curve", this, SLOT(addCurve()),
                       QKeySequence(Qt::CTRL + Qt::Key_A));
-  menuFile->addAction("Save...");
   menuFile->addAction("Exit");
 
   QMenu *menuEdit = new QMenu("Edit", this);
@@ -40,7 +43,8 @@ void MainWindow::initMenuBar() {
   menuEdit->addAction("Remove Curve", this, SLOT(removeCurve()),
                       QKeySequence(Qt::Key_Backspace));
 
-  QMenu *menuAbout = new QMenu("About", this);
+  QMenu *menuAbout = new QMenu("Help", this);
+  menuEdit->addAction("About");
 
   menuBar->addMenu(menuFile);
   menuBar->addMenu(menuEdit);
@@ -77,6 +81,17 @@ void MainWindow::redoCmd() {
   TabWidget *currentTab =
       reinterpret_cast<TabWidget *>(qTabWidget->currentWidget());
   currentTab->redoCmd();
+}
+void MainWindow::openProject() {
+  TabWidget *currentTab =
+      reinterpret_cast<TabWidget *>(qTabWidget->currentWidget());
+  currentTab->openProject(ioController);
+}
+
+void MainWindow::saveProject() {
+  TabWidget *currentTab =
+      reinterpret_cast<TabWidget *>(qTabWidget->currentWidget());
+  currentTab->saveProject(ioController);
 }
 
 void MainWindow::undoCmd() {

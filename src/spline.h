@@ -12,8 +12,8 @@ public:
   size_t addPoint(size_t idx, double x, double y);
   size_t addPointTo(size_t idx, QPointF &point, bool rebuild = true);
   QPointF atSup(size_t idx);
-  void build(size_t approxParam);
   QPointF &atVal(size_t idx);
+  void build(size_t approxParam = approx);
   void removeAt(size_t idx, bool rebuild = true);
   void resetPoint(size_t idx, QPointF point);
   void resetPointX(size_t idx, double x);
@@ -40,6 +40,9 @@ private:
   double bSpline(int deg, int index, double t);
   QPointF generalSpline(double t);
   void generateKnots();
+
+  friend QDataStream &operator<<(QDataStream &stream, const Spline &spline);
+  friend QDataStream &operator>>(QDataStream &stream, Spline &spline);
 };
 
 #endif // SPLINE_H

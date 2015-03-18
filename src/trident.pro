@@ -21,13 +21,15 @@ SOURCES += main.cpp\
     spline.cpp \
     canvas.cpp \
     tabwidget.cpp \
-    splinegroup.cpp
+    splinegroup.cpp \
+    iocontroller.cpp
 
 HEADERS  += mainwindow.h \
     spline.h \
     canvas.h \
     tabwidget.h \
     canvas_actions.h \
-    splinegroup.h
+    splinegroup.h \
+    iocontroller.h
 
 FORMS    += mainwindow.ui

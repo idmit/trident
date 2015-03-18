@@ -4,6 +4,7 @@
 #include <QMainWindow>
 
 #include "canvas.h"
+#include "iocontroller.h"
 
 namespace Ui {
 class MainWindow;
@@ -20,6 +21,7 @@ private:
   void initMenuBar();
 
   Ui::MainWindow *ui;
+  IOController ioController;
   QTabWidget *qTabWidget;
 
 public slots:
@@ -28,6 +30,8 @@ public slots:
   void pasteCurve();
   void removeCurve();
   void redoCmd();
+  void openProject();
+  void saveProject();
   void undoCmd();
 };
 

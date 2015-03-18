@@ -12,6 +12,8 @@ constexpr double rad2deg = 57.2957795131;
 
 Canvas::Canvas(QWidget *parent) : QWidget(parent) {}
 
+SplineGroup *Canvas::getActiveGroup() { return activeGroup; }
+
 void Canvas::setActiveSplineIdx(size_t idx) { activeGroup->setIdx(idx); }
 
 void Canvas::setActiveGroup(SplineGroup *group) { activeGroup = group; }
