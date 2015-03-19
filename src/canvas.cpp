@@ -39,8 +39,33 @@ void Canvas::drawGrid(QPainter &painter, size_t cellNum, size_t cellsInThick) {
 void Canvas::drawSplines(QPainter &painter) {
   int w = width(), h = height();
 
+  QVector<QPainterPath> paths;
+
+  for (size_t k = 0; k < activeGroup->size(); ++k) {
+    Spline spline = activeGroup->get(k);
+    QPointF a = spline.atVal(0);
+    paths.append(QPainterPath());
+    paths[k].moveTo(a.x() * w, a.y() * h);
+    for (size_t i = 1; spline.valSize() > 0 && i < spline.valSize(); ++i) {
+      QPointF b = spline.atVal(i);
+      paths[k].lineTo(b.x() * w, b.y() * h);
+    }
+  }
+
+  for (int i = 0; i < paths.size() - 1; ++i) {
+    for (int k = i + 1; k < paths.size(); ++k) {
+      if (paths[i].intersects(paths[k])) {
+        QPainterPath interection = paths[i].intersected(paths[k]);
+        paths[i] = paths[i].subtracted(interection);
+        paths[k] = paths[k].subtracted(interection);
+      }
+    }
+  }
+
   for (size_t i = 0; i < activeGroup->size(); ++i) {
     Spline spline = activeGroup->get(i);
+
+    painter.fillPath(paths[i], QBrush(Qt::black, Qt::Dense5Pattern));
 
     painter.setPen(QPen(Qt::gray, 1, Qt::DashLine));
     if (spline.supSize() > 0) {
@@ -51,20 +76,15 @@ void Canvas::drawSplines(QPainter &painter) {
       QPointF a = spline.atSup(spline.supSize() - 1), b = spline.atSup(0);
       painter.drawLine(a.x() * w, a.y() * h, b.x() * w, b.y() * h);
 
-      if (i == activeGroup->getIdx()) {
-        painter.setPen(QPen(Qt::blue, 1, Qt::SolidLine));
-      }
+      painter.setPen(QPen(QColor(0, 116, 217), 1, Qt::SolidLine));
+      QColor brushColor = (i == activeGroup->getIdx()) ? QColor(255, 220, 0)
+                                                       : QColor(221, 221, 221);
+      painter.setBrush(QBrush(brushColor, Qt::SolidPattern));
 
       for (size_t i = 0; i < spline.supSize(); ++i) {
         QPointF a = spline.atSup(i);
         painter.drawEllipse(QPointF(a.x() * w, a.y() * h), radius, radius);
       }
-    }
-
-    painter.setPen(QPen(Qt::black, 1, Qt::SolidLine));
-    for (size_t i = 0; spline.valSize() > 0 && i < spline.valSize() - 1; ++i) {
-      QPointF a = spline.atVal(i), b = spline.atVal(i + 1);
-      painter.drawLine(a.x() * w, a.y() * h, b.x() * w, b.y() * h);
     }
   }
 }
