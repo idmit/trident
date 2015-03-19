@@ -28,7 +28,7 @@ public slots:
   void pasteCurve();
   void removeCurve();
 
-  void openProject(IOController &ioController);
+  QString openProject(IOController &ioController);
   void saveProject(IOController &ioController);
 
   void redoCmd();

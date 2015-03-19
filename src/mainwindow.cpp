@@ -11,9 +11,6 @@ MainWindow::MainWindow(QWidget *parent)
   initMenuBar();
 
   qTabWidget = new QTabWidget(this);
-  qTabWidget->addTab(new TabWidget(qTabWidget), "First Project");
-  qTabWidget->addTab(new TabWidget(qTabWidget), "Second Project");
-  qTabWidget->addTab(new TabWidget(qTabWidget), "Third Project");
 
   ui->gridLayout->addWidget(qTabWidget);
 }
@@ -28,6 +25,8 @@ void MainWindow::initMenuBar() {
                       QKeySequence(Qt::CTRL + Qt::Key_S));
 
   menuFile->addSeparator();
+  menuFile->addAction("Create Project", this, SLOT(createProject()),
+                      QKeySequence(Qt::CTRL + Qt::Key_N));
   menuFile->addAction("Add Curve", this, SLOT(addCurve()),
                       QKeySequence(Qt::CTRL + Qt::Key_A));
   menuFile->addAction("Exit");
@@ -45,11 +44,16 @@ void MainWindow::initMenuBar() {
   menuEdit->addAction("Undo", this, SLOT(redoCmd()),
                       QKeySequence(Qt::CTRL + Qt::SHIFT + Qt::Key_Z));
 
+  QMenu *menuView = new QMenu("View", this);
+  menuView->addAction("Close Tab", this, SLOT(closeProject()),
+                      QKeySequence(Qt::CTRL + Qt::Key_W));
+
   QMenu *menuAbout = new QMenu("Help", this);
   menuEdit->addAction("About");
 
   menuBar->addMenu(menuFile);
   menuBar->addMenu(menuEdit);
+  menuBar->addMenu(menuView);
   menuBar->addMenu(menuAbout);
 }
 
@@ -85,15 +89,27 @@ void MainWindow::redoCmd() {
   currentTab->redoCmd();
 }
 void MainWindow::openProject() {
-  TabWidget *currentTab =
-      reinterpret_cast<TabWidget *>(qTabWidget->currentWidget());
-  currentTab->openProject(ioController);
+  TabWidget *newTab = new TabWidget(qTabWidget);
+  QString projectName = newTab->openProject(ioController);
+  qTabWidget->addTab(newTab, projectName);
+  qTabWidget->setCurrentWidget(newTab);
 }
 
 void MainWindow::saveProject() {
   TabWidget *currentTab =
       reinterpret_cast<TabWidget *>(qTabWidget->currentWidget());
   currentTab->saveProject(ioController);
+}
+
+void MainWindow::createProject() {
+  TabWidget *newTab = new TabWidget(qTabWidget);
+  qTabWidget->addTab(newTab, "#");
+  qTabWidget->setCurrentWidget(newTab);
+}
+
+void MainWindow::closeProject() {
+  saveProject();
+  qTabWidget->removeTab(qTabWidget->currentIndex());
 }
 
 void MainWindow::undoCmd() {

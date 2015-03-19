@@ -42,7 +42,7 @@ void TabWidget::copyCurve() { canvas->copyCurve(); }
 void TabWidget::pasteCurve() { canvas->pasteCurve(); }
 void TabWidget::removeCurve() { canvas->removeCurve(); }
 
-void TabWidget::openProject(IOController &ioController) {
+QString TabWidget::openProject(IOController &ioController) {
   QString filename = QFileDialog::getOpenFileName(
       this, tr("Open Project"), "", tr("Trident font files (*.trft)"));
   if (!filename.isEmpty()) {
@@ -52,6 +52,7 @@ void TabWidget::openProject(IOController &ioController) {
     list->setCurrentRow(0);
     reloadCanvas(list->selectedItems().first()->text());
   }
+  return filename;
 }
 
 void TabWidget::saveProject(IOController &ioController) {

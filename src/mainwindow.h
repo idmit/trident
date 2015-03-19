@@ -29,6 +29,8 @@ public slots:
   void copyCurve();
   void pasteCurve();
   void removeCurve();
+  void createProject();
+  void closeProject();
   void redoCmd();
   void openProject();
   void saveProject();
