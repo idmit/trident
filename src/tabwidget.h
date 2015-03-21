@@ -28,6 +28,8 @@ public slots:
   void pasteCurve();
   void removeCurve();
 
+  void addLetter(QChar name);
+
   QString openProject(IOController &ioController);
   void saveProject(IOController &ioController);
 

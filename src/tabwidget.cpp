@@ -61,5 +61,15 @@ void TabWidget::saveProject(IOController &ioController) {
   ioController.writeToFile(filename, map);
 }
 
+void TabWidget::addLetter(QChar name) {
+  if (!map.contains(name)) {
+    map.insert(name, SplineGroup());
+    QListWidgetItem *item = new QListWidgetItem(name);
+    list->addItem(item);
+    list->setCurrentItem(item);
+    reloadCanvas(name);
+  }
+}
+
 void TabWidget::redoCmd() { canvas->redoCmd(); }
 void TabWidget::undoCmd() { canvas->undoCmd(); }

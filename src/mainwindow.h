@@ -31,9 +31,10 @@ public slots:
   void removeCurve();
   void createProject();
   void closeProject();
-  void redoCmd();
   void openProject();
   void saveProject();
+  void addLetter();
+  void redoCmd();
   void undoCmd();
 };
 

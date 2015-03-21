@@ -19,40 +19,44 @@ void MainWindow::initMenuBar() {
   QMenuBar *menuBar = this->menuBar();
 
   QMenu *menuFile = new QMenu("File", this);
+  menuFile->addAction("Create Project", this, SLOT(createProject()),
+                      QKeySequence(Qt::CTRL + Qt::Key_N));
   menuFile->addAction("Open Project", this, SLOT(openProject()),
                       QKeySequence(Qt::CTRL + Qt::Key_O));
   menuFile->addAction("Save Project", this, SLOT(saveProject()),
                       QKeySequence(Qt::CTRL + Qt::Key_S));
 
-  menuFile->addSeparator();
-  menuFile->addAction("Create Project", this, SLOT(createProject()),
-                      QKeySequence(Qt::CTRL + Qt::Key_N));
-  menuFile->addAction("Add Curve", this, SLOT(addCurve()),
-                      QKeySequence(Qt::CTRL + Qt::Key_A));
-  menuFile->addAction("Exit");
-
   QMenu *menuEdit = new QMenu("Edit", this);
-  menuEdit->addAction("Copy Curve", this, SLOT(copyCurve()),
-                      QKeySequence(Qt::CTRL + Qt::Key_C));
-  menuEdit->addAction("Paste Curve", this, SLOT(pasteCurve()),
-                      QKeySequence(Qt::CTRL + Qt::Key_V));
-  menuEdit->addAction("Remove Curve", this, SLOT(removeCurve()),
-                      QKeySequence(Qt::Key_Backspace));
-  menuEdit->addSeparator();
   menuEdit->addAction("Redo", this, SLOT(undoCmd()),
                       QKeySequence(Qt::CTRL + Qt::Key_Z));
   menuEdit->addAction("Undo", this, SLOT(redoCmd()),
                       QKeySequence(Qt::CTRL + Qt::SHIFT + Qt::Key_Z));
+
+  QMenu *menuCurve = new QMenu("Curve", this);
+  menuCurve->addAction("Add Curve", this, SLOT(addCurve()),
+                       QKeySequence(Qt::CTRL + Qt::Key_A));
+  menuCurve->addAction("Copy Curve", this, SLOT(copyCurve()),
+                       QKeySequence(Qt::CTRL + Qt::Key_C));
+  menuCurve->addAction("Paste Curve", this, SLOT(pasteCurve()),
+                       QKeySequence(Qt::CTRL + Qt::Key_V));
+  menuCurve->addAction("Remove Curve", this, SLOT(removeCurve()),
+                       QKeySequence(Qt::Key_Backspace));
+
+  QMenu *menuLetter = new QMenu("Letter", this);
+  menuLetter->addAction("Add Letter", this, SLOT(addLetter()),
+                        QKeySequence(Qt::CTRL + Qt::Key_L));
 
   QMenu *menuView = new QMenu("View", this);
   menuView->addAction("Close Tab", this, SLOT(closeProject()),
                       QKeySequence(Qt::CTRL + Qt::Key_W));
 
   QMenu *menuAbout = new QMenu("Help", this);
-  menuEdit->addAction("About");
+  menuAbout->addAction("About");
 
   menuBar->addMenu(menuFile);
   menuBar->addMenu(menuEdit);
+  menuBar->addMenu(menuCurve);
+  menuBar->addMenu(menuLetter);
   menuBar->addMenu(menuView);
   menuBar->addMenu(menuAbout);
 }
@@ -110,6 +114,12 @@ void MainWindow::createProject() {
 void MainWindow::closeProject() {
   saveProject();
   qTabWidget->removeTab(qTabWidget->currentIndex());
+}
+
+void MainWindow::addLetter() {
+  TabWidget *currentTab =
+      reinterpret_cast<TabWidget *>(qTabWidget->currentWidget());
+  currentTab->addLetter('a');
 }
 
 void MainWindow::undoCmd() {
