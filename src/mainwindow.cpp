@@ -103,8 +103,13 @@ void MainWindow::redoCmd() {
 void MainWindow::openProject() {
   TabWidget *newTab = new TabWidget(qTabWidget);
   QString projectName = newTab->openProject(ioController);
+  if (!projectName.isEmpty()) {
   qTabWidget->addTab(newTab, projectName);
   qTabWidget->setCurrentWidget(newTab);
+  }
+  else {
+    delete newTab;
+  }
 }
 
 void MainWindow::saveProject() {

@@ -43,22 +43,25 @@ void TabWidget::pasteCurve() { canvas->pasteCurve(); }
 void TabWidget::removeCurve() { canvas->removeCurve(); }
 
 QString TabWidget::openProject(IOController &ioController) {
-  QString filename = QFileDialog::getOpenFileName(
+  projectFileName = QFileDialog::getOpenFileName(
       this, tr("Open Project"), "", tr("Trident font files (*.trft)"));
-  if (!filename.isEmpty()) {
+  if (!projectFileName.isEmpty()) {
     list->clear();
-    map = ioController.readFromFile(filename);
+    map = ioController.readFromFile(projectFileName);
     list->addItems(map.keys());
     list->setCurrentRow(0);
     reloadCanvas(list->selectedItems().first()->text());
   }
-  return filename;
+  QFileInfo fileInfo(projectFileName);
+  return fileInfo.completeBaseName();
 }
 
 void TabWidget::saveProject(IOController &ioController) {
-  QString filename = QFileDialog::getSaveFileName(
-      this, tr("Save Project"), "", tr("Trident font files (*.trft)"));
-  ioController.writeToFile(filename, map);
+  if (projectFileName.isEmpty()) {
+  projectFileName = QFileDialog::getSaveFileName(
+      this, tr("Save Project"), projectFileName, tr("Trident font files (*.trft)"));
+  }
+  ioController.writeToFile(projectFileName, map);
 }
 
 void TabWidget::addLetter(QChar name) {

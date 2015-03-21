@@ -20,6 +20,7 @@ private:
   Canvas *canvas;
   QHash<QString, SplineGroup> map;
   QListWidget *list;
+  QString projectFileName;
 
 public slots:
   void reloadCanvas(const QString &currentText);
