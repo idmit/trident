@@ -56,12 +56,14 @@ QString TabWidget::openProject(IOController &ioController) {
   return fileInfo.completeBaseName();
 }
 
-void TabWidget::saveProject(IOController &ioController) {
+QString TabWidget::saveProject(IOController &ioController) {
   if (projectFileName.isEmpty()) {
-  projectFileName = QFileDialog::getSaveFileName(
-      this, tr("Save Project"), projectFileName, tr("Trident font files (*.trft)"));
+    projectFileName = QFileDialog::getSaveFileName(
+        this, tr("Save Project"), "", tr("Trident font files (*.trft)"));
   }
   ioController.writeToFile(projectFileName, map);
+  QFileInfo fileInfo(projectFileName);
+  return fileInfo.completeBaseName();
 }
 
 void TabWidget::addLetter(QChar name) {
@@ -71,6 +73,21 @@ void TabWidget::addLetter(QChar name) {
     list->addItem(item);
     list->setCurrentItem(item);
     reloadCanvas(name);
+  }
+}
+
+void TabWidget::deleteLetter() {
+  if (list->count() == 1) {
+    return;
+  }
+  QListWidgetItem *active = list->currentItem();
+  if (active) {
+    QChar name = active->text().at(0);
+    auto iter = map.find(name);
+    map.erase(iter);
+    delete active;
+    list->setCurrentRow(0);
+    reloadCanvas(list->currentItem()->text());
   }
 }
 

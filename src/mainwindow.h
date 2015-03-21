@@ -33,7 +33,9 @@ public slots:
   void closeProject();
   void openProject();
   void saveProject();
+  void saveAll();
   void addLetter();
+  void deleteLetter();
   void redoCmd();
   void undoCmd();
 };

@@ -30,9 +30,10 @@ public slots:
   void removeCurve();
 
   void addLetter(QChar name);
+  void deleteLetter();
 
   QString openProject(IOController &ioController);
-  void saveProject(IOController &ioController);
+  QString saveProject(IOController &ioController);
 
   void redoCmd();
   void undoCmd();

@@ -26,6 +26,8 @@ void MainWindow::initMenuBar() {
                       QKeySequence(Qt::CTRL + Qt::Key_O));
   menuFile->addAction("Save Project", this, SLOT(saveProject()),
                       QKeySequence(Qt::CTRL + Qt::Key_S));
+  menuFile->addAction("Save All", this, SLOT(saveProject()),
+                      QKeySequence(Qt::CTRL + Qt::SHIFT + Qt::Key_S));
   menuFile->addAction("Close Project", this, SLOT(closeProject()),
                       QKeySequence(Qt::CTRL + Qt::Key_W));
 
@@ -48,6 +50,8 @@ void MainWindow::initMenuBar() {
   QMenu *menuLetter = new QMenu("Letter", this);
   menuLetter->addAction("Add Letter", this, SLOT(addLetter()),
                         QKeySequence(Qt::CTRL + Qt::Key_L));
+  menuLetter->addAction("Delete Letter", this, SLOT(deleteLetter()),
+                        QKeySequence(Qt::CTRL + Qt::Key_K));
 
   QMenu *menuAbout = new QMenu("Help", this);
   menuAbout->addAction("About");
@@ -104,10 +108,9 @@ void MainWindow::openProject() {
   TabWidget *newTab = new TabWidget(qTabWidget);
   QString projectName = newTab->openProject(ioController);
   if (!projectName.isEmpty()) {
-  qTabWidget->addTab(newTab, projectName);
-  qTabWidget->setCurrentWidget(newTab);
-  }
-  else {
+    qTabWidget->addTab(newTab, projectName);
+    qTabWidget->setCurrentWidget(newTab);
+  } else {
     delete newTab;
   }
 }
@@ -120,28 +123,19 @@ void MainWindow::saveProject() {
   }
 }
 
+void MainWindow::saveAll() {
+  for (int i = 0; i < qTabWidget->count(); ++i) {
+    qTabWidget->setCurrentIndex(i);
+    saveProject();
+  }
+}
+
 void MainWindow::createProject() {
   TabWidget *newTab = new TabWidget(qTabWidget);
-  bool isOK = true;
-  while (isOK) {
-    QString text = QInputDialog::getText(
-        this, tr("Create Project"), tr("Choose project name:"),
-        QLineEdit::Normal, "Untitled Project", &isOK);
-    if (isOK) {
-      if (!text.isEmpty()) {
-        int i;
-        for (i = 0; i < qTabWidget->count(); ++i) {
-          if (text == qTabWidget->tabText(i)) {
-            break;
-          }
-        }
-        if (i == qTabWidget->count()) {
-          qTabWidget->addTab(newTab, text);
-          qTabWidget->setCurrentWidget(newTab);
-          isOK = false;
-        }
-      }
-    }
+  QString projectName = newTab->saveProject(ioController);
+  if (!projectName.isEmpty()) {
+    qTabWidget->addTab(newTab, projectName);
+    qTabWidget->setCurrentWidget(newTab);
   }
 }
 
@@ -166,6 +160,14 @@ void MainWindow::addLetter() {
         }
       }
     }
+  }
+}
+
+void MainWindow::deleteLetter() {
+  TabWidget *currentTab =
+      reinterpret_cast<TabWidget *>(qTabWidget->currentWidget());
+  if (currentTab) {
+    currentTab->deleteLetter();
   }
 }
 
