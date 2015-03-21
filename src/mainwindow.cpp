@@ -1,5 +1,6 @@
 #include <QMenuBar>
 #include <QTabWidget>
+#include <QInputDialog>
 
 #include "mainwindow.h"
 #include "tabwidget.h"
@@ -25,6 +26,8 @@ void MainWindow::initMenuBar() {
                       QKeySequence(Qt::CTRL + Qt::Key_O));
   menuFile->addAction("Save Project", this, SLOT(saveProject()),
                       QKeySequence(Qt::CTRL + Qt::Key_S));
+  menuFile->addAction("Close Project", this, SLOT(closeProject()),
+                      QKeySequence(Qt::CTRL + Qt::Key_W));
 
   QMenu *menuEdit = new QMenu("Edit", this);
   menuEdit->addAction("Redo", this, SLOT(undoCmd()),
@@ -46,10 +49,6 @@ void MainWindow::initMenuBar() {
   menuLetter->addAction("Add Letter", this, SLOT(addLetter()),
                         QKeySequence(Qt::CTRL + Qt::Key_L));
 
-  QMenu *menuView = new QMenu("View", this);
-  menuView->addAction("Close Tab", this, SLOT(closeProject()),
-                      QKeySequence(Qt::CTRL + Qt::Key_W));
-
   QMenu *menuAbout = new QMenu("Help", this);
   menuAbout->addAction("About");
 
@@ -57,7 +56,6 @@ void MainWindow::initMenuBar() {
   menuBar->addMenu(menuEdit);
   menuBar->addMenu(menuCurve);
   menuBar->addMenu(menuLetter);
-  menuBar->addMenu(menuView);
   menuBar->addMenu(menuAbout);
 }
 
@@ -66,31 +64,41 @@ MainWindow::~MainWindow() { delete ui; }
 void MainWindow::addCurve() {
   TabWidget *currentTab =
       reinterpret_cast<TabWidget *>(qTabWidget->currentWidget());
-  currentTab->addCurve();
+  if (currentTab) {
+    currentTab->addCurve();
+  }
 }
 
 void MainWindow::copyCurve() {
   TabWidget *currentTab =
       reinterpret_cast<TabWidget *>(qTabWidget->currentWidget());
-  currentTab->copyCurve();
+  if (currentTab) {
+    currentTab->copyCurve();
+  }
 }
 
 void MainWindow::pasteCurve() {
   TabWidget *currentTab =
       reinterpret_cast<TabWidget *>(qTabWidget->currentWidget());
-  currentTab->pasteCurve();
+  if (currentTab) {
+    currentTab->pasteCurve();
+  }
 }
 
 void MainWindow::removeCurve() {
   TabWidget *currentTab =
       reinterpret_cast<TabWidget *>(qTabWidget->currentWidget());
-  currentTab->removeCurve();
+  if (currentTab) {
+    currentTab->removeCurve();
+  }
 }
 
 void MainWindow::redoCmd() {
   TabWidget *currentTab =
       reinterpret_cast<TabWidget *>(qTabWidget->currentWidget());
-  currentTab->redoCmd();
+  if (currentTab) {
+    currentTab->redoCmd();
+  }
 }
 void MainWindow::openProject() {
   TabWidget *newTab = new TabWidget(qTabWidget);
@@ -102,13 +110,34 @@ void MainWindow::openProject() {
 void MainWindow::saveProject() {
   TabWidget *currentTab =
       reinterpret_cast<TabWidget *>(qTabWidget->currentWidget());
-  currentTab->saveProject(ioController);
+  if (currentTab) {
+    currentTab->saveProject(ioController);
+  }
 }
 
 void MainWindow::createProject() {
   TabWidget *newTab = new TabWidget(qTabWidget);
-  qTabWidget->addTab(newTab, "#");
-  qTabWidget->setCurrentWidget(newTab);
+  bool isOK = true;
+  while (isOK) {
+    QString text = QInputDialog::getText(
+        this, tr("Create Project"), tr("Choose project name:"),
+        QLineEdit::Normal, "Untitled Project", &isOK);
+    if (isOK) {
+      if (!text.isEmpty()) {
+        int i;
+        for (i = 0; i < qTabWidget->count(); ++i) {
+          if (text == qTabWidget->tabText(i)) {
+            break;
+          }
+        }
+        if (i == qTabWidget->count()) {
+          qTabWidget->addTab(newTab, text);
+          qTabWidget->setCurrentWidget(newTab);
+          isOK = false;
+        }
+      }
+    }
+  }
 }
 
 void MainWindow::closeProject() {
@@ -119,11 +148,26 @@ void MainWindow::closeProject() {
 void MainWindow::addLetter() {
   TabWidget *currentTab =
       reinterpret_cast<TabWidget *>(qTabWidget->currentWidget());
-  currentTab->addLetter('a');
+  if (currentTab) {
+    bool isOK = true;
+    while (isOK) {
+      QString text =
+          QInputDialog::getText(this, tr("Create Letter"), tr("Choose letter:"),
+                                QLineEdit::Normal, "A", &isOK);
+      if (isOK) {
+        if (isOK && (text.size() > 0) && (text.size() < 2)) {
+          currentTab->addLetter(QChar(text[0]));
+          isOK = false;
+        }
+      }
+    }
+  }
 }
 
 void MainWindow::undoCmd() {
   TabWidget *currentTab =
       reinterpret_cast<TabWidget *>(qTabWidget->currentWidget());
-  currentTab->undoCmd();
+  if (currentTab) {
+    currentTab->undoCmd();
+  }
 }
