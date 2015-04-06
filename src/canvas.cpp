@@ -39,13 +39,16 @@ void Canvas::drawGrid(QPainter &painter, size_t cellNum, size_t cellsInThick) {
 void Canvas::drawBorders(QPainter &painter) {
   int w = width(), h = height();
   double hwr = activeGroup->getHWR(), hsr = activeGroup->getHSR();
+  double bBorder = activeGroup->getBorder("bottom");
+  double tBorder = activeGroup->getBorder("top");
+  double lBorder = activeGroup->getBorder("left");
   painter.setPen(QPen(QColor(0,0,220), 3, Qt::DotLine));
   painter.drawLine(0, bBorder * h, w, bBorder * h);
   painter.drawLine(0, tBorder * h, w, tBorder * h);
   painter.drawLine(lBorder * w, 0, lBorder * w, h);
-  rBorder = lBorder + (bBorder - tBorder) / hwr;
+  double rBorder = lBorder + (bBorder - tBorder) / hwr;
   painter.drawLine(rBorder * w, 0, rBorder * w, h);
-  sBorder = rBorder + (bBorder - tBorder) / hsr;
+  double sBorder = rBorder + (bBorder - tBorder) / hsr;
   painter.setPen(QPen(QColor(220,0,0), 3, Qt::DotLine));
   painter.drawLine(sBorder * w, 0, sBorder * w, h);
 }

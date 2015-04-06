@@ -3,14 +3,31 @@
 SplineGroup::SplineGroup() {
   hwr = 1.0;
   hsr = 1.0;
+  borders.insert("left", 0.4);
+  borders.insert("top", 0.4);
+  borders.insert("bottom", 0.6);
   splines.append(Spline());
 }
 
 void SplineGroup::setIdx(size_t idx) { activeIdx = idx; }
 
-void SplineGroup::setHWR(double ratio) { hwr = ratio; }
+void SplineGroup::setHWR(double ratio) {
+  hwr = ratio;
+}
 
 void SplineGroup::setHSR(double ratio) { hsr = ratio; }
+
+void SplineGroup::setBorder(QString name, double val)
+{
+  if (borders.contains(name)) {
+    borders.erase(borders.find(name));
+  }
+  borders.insert(name,val);
+}
+
+double SplineGroup::getBorder(QString name) {
+  return borders.value(name);
+}
 
 size_t SplineGroup::getIdx() { return activeIdx; }
 
@@ -59,6 +76,7 @@ QDataStream &operator<<(QDataStream &stream, const SplineGroup &group) {
   stream << group.hwr;
   stream << group.hsr;
   stream << group.splines;
+  stream << group.borders;
   return stream;
 }
 
@@ -66,5 +84,6 @@ QDataStream &operator>>(QDataStream &stream, SplineGroup &group) {
   stream >> group.hwr;
   stream >> group.hsr;
   stream >> group.splines;
+  stream >> group.borders;
   return stream;
 }

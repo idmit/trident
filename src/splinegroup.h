@@ -23,6 +23,8 @@ public:
   void setIdx(size_t idx);
   void setHWR(double ratio);
   void setHSR(double ratio);
+  void setBorder(QString name, double val);
+  double getBorder(QString name);
   size_t size();
 
   QUndoStack *undoStack = new QUndoStack();
@@ -31,6 +33,7 @@ private:
   size_t activeIdx = 0;
   QVector<Spline> splines;
   double hwr,hsr;
+  QHash<QString,double> borders;
   friend QDataStream &operator<<(QDataStream &stream, const SplineGroup &group);
   friend QDataStream &operator>>(QDataStream &stream, SplineGroup &group);
 };

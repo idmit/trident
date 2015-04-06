@@ -27,7 +27,7 @@ private:
   bool movingCurve = false;
   Spline originSpline;
 
-  double rBorder, lBorder = 0.4, tBorder = 0.4, bBorder = 0.6, sBorder;
+
   size_t radius = 10;
   SplineGroup *activeGroup = nullptr;
 
