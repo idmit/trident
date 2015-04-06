@@ -1,8 +1,8 @@
 #include "splinegroup.h"
 
 SplineGroup::SplineGroup() {
-  hwr = 1.0;
-  hsr = 1.0;
+  hwr = 2;
+  hsr = 5;
   borders.insert("left", 0.4);
   borders.insert("top", 0.4);
   borders.insert("bottom", 0.6);

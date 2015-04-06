@@ -22,6 +22,10 @@ protected:
 
 private:
   bool moving = false;
+  bool movingB = false;
+  bool movingT = false;
+  bool movingL = false;
+  QPointF borderPos;
   size_t pressedPointIdx = 0;
   QPointF diffToPress, originPos;
   bool movingCurve = false;

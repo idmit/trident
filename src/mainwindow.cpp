@@ -117,7 +117,7 @@ void MainWindow::rhwCmd() {
     while (isOK) {
       double ratio =
           QInputDialog::getDouble(this, tr("Set height / width ratio"),
-                                  tr("Amount:"), 1.25, 0.3, 3, 2, &isOK);
+                                  tr("Amount:"), 2.5, 0.2, 10, 2, &isOK);
       if (isOK) {
         if (isOK) {
            currentTab->setHWRatio(ratio);
@@ -136,7 +136,7 @@ void MainWindow::rhsCmd() {
     while (isOK) {
       double ratio =
           QInputDialog::getDouble(this, tr("Set height / space ratio"),
-                                  tr("Amount:"), 0.5, 0.3, 3, 2, &isOK);
+                                  tr("Amount:"), 5, 0.2, 10, 2, &isOK);
       if (isOK) {
         if (isOK) {
           currentTab->setHSRatio(ratio);

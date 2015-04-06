@@ -38,19 +38,25 @@ void Canvas::drawGrid(QPainter &painter, size_t cellNum, size_t cellsInThick) {
 
 void Canvas::drawBorders(QPainter &painter) {
   int w = width(), h = height();
+  int linewidth = 2;
   double hwr = activeGroup->getHWR(), hsr = activeGroup->getHSR();
   double bBorder = activeGroup->getBorder("bottom");
   double tBorder = activeGroup->getBorder("top");
   double lBorder = activeGroup->getBorder("left");
-  painter.setPen(QPen(QColor(0,0,220), 3, Qt::DotLine));
+  painter.setPen(QPen(QColor(0, 0, 220), linewidth, Qt::DotLine));
   painter.drawLine(0, bBorder * h, w, bBorder * h);
+  painter.drawEllipse(QPointF(0, bBorder * h), radius, radius);
   painter.drawLine(0, tBorder * h, w, tBorder * h);
+  painter.drawEllipse(QPointF(0, tBorder * h), radius, radius);
   painter.drawLine(lBorder * w, 0, lBorder * w, h);
+  painter.drawEllipse(QPointF(lBorder * w, 0), radius, radius);
   double rBorder = lBorder + (bBorder - tBorder) / hwr;
   painter.drawLine(rBorder * w, 0, rBorder * w, h);
+  painter.drawEllipse(QPointF(rBorder * w, 0), radius, radius);
   double sBorder = rBorder + (bBorder - tBorder) / hsr;
-  painter.setPen(QPen(QColor(220,0,0), 3, Qt::DotLine));
+  painter.setPen(QPen(QColor(220, 0, 0), linewidth, Qt::DotLine));
   painter.drawLine(sBorder * w, 0, sBorder * w, h);
+  painter.drawEllipse(QPointF(sBorder * w, 0), radius, radius);
 }
 
 void Canvas::drawSplines(QPainter &painter) {
@@ -118,6 +124,32 @@ void Canvas::mousePressEvent(QMouseEvent *event) {
   QPointF pos = event->localPos();
   QPointF localPos = QPointF(pos.x() / width(), pos.y() / height());
   size_t rad2 = radius * radius;
+  double dx, dy;
+
+  double bBorder = activeGroup->getBorder("bottom");
+  dx = 0 - pos.x();
+  dy = bBorder * height() - pos.y();
+  if (dx * dx + dy * dy < rad2) {
+    if (event->button() == Qt::LeftButton) {
+      movingB = true;
+    }
+  }
+  double tBorder = activeGroup->getBorder("top");
+  dx = 0 - pos.x();
+  dy = tBorder * height() - pos.y();
+  if (dx * dx + dy * dy < rad2) {
+    if (event->button() == Qt::LeftButton) {
+      movingT = true;
+    }
+  }
+  double lBorder = activeGroup->getBorder("left");
+  dx = lBorder * width() - pos.x();
+  dy = 0 - pos.y();
+  if (dx * dx + dy * dy < rad2) {
+    if (event->button() == Qt::LeftButton) {
+      movingL = true;
+    }
+  }
 
   for (size_t k = 0; k < activeGroup->size(); ++k) {
     Spline spline = activeGroup->get(k);
@@ -234,6 +266,23 @@ void Canvas::mouseMoveEvent(QMouseEvent *event) {
       }
     }
   }
+
+  if (movingB) {
+    if (localPos.x() < radius * radius) {
+      activeGroup->setBorder("bottom", localPos.y());
+    }
+  }
+  if (movingT) {
+    if (localPos.x() < radius * radius) {
+      activeGroup->setBorder("top", localPos.y());
+    }
+  }
+  if (movingL) {
+    if (localPos.y() < radius * radius) {
+      activeGroup->setBorder("left", localPos.x());
+    }
+  }
+
   repaint();
 }
 
@@ -251,6 +300,7 @@ void Canvas::mouseReleaseEvent(QMouseEvent *) {
     }
     moving = false;
   }
+  movingL = movingB = movingT = false;
 }
 
 void Canvas::paintEvent(QPaintEvent *) {
@@ -347,14 +397,12 @@ void Canvas::undoCmd() {
   repaint();
 }
 
-void Canvas::setHWRatio(double r)
-{
+void Canvas::setHWRatio(double r) {
   activeGroup->setHWR(r);
   repaint();
 }
 
-void Canvas::setHSRatio(double r)
-{
+void Canvas::setHSRatio(double r) {
   activeGroup->setHSR(r);
   repaint();
 }
