@@ -1,8 +1,16 @@
 #include "splinegroup.h"
 
-SplineGroup::SplineGroup() { splines.append(Spline()); }
+SplineGroup::SplineGroup() {
+  hwr = 1.0;
+  hsr = 1.0;
+  splines.append(Spline());
+}
 
 void SplineGroup::setIdx(size_t idx) { activeIdx = idx; }
+
+void SplineGroup::setHWR(double ratio) { hwr = ratio; }
+
+void SplineGroup::setHSR(double ratio) { hsr = ratio; }
 
 size_t SplineGroup::getIdx() { return activeIdx; }
 
@@ -41,14 +49,22 @@ Spline &SplineGroup::get(size_t idx) { return splines[idx]; }
 
 Spline &SplineGroup::getActive() { return splines[activeIdx]; }
 
+double SplineGroup::getHWR() { return hwr; }
+
+double SplineGroup::getHSR() { return hsr; }
+
 size_t SplineGroup::size() { return splines.size(); }
 
 QDataStream &operator<<(QDataStream &stream, const SplineGroup &group) {
+  stream << group.hwr;
+  stream << group.hsr;
   stream << group.splines;
   return stream;
 }
 
 QDataStream &operator>>(QDataStream &stream, SplineGroup &group) {
+  stream >> group.hwr;
+  stream >> group.hsr;
   stream >> group.splines;
   return stream;
 }

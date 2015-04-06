@@ -36,6 +36,20 @@ void Canvas::drawGrid(QPainter &painter, size_t cellNum, size_t cellsInThick) {
   }
 }
 
+void Canvas::drawBorders(QPainter &painter) {
+  int w = width(), h = height();
+  double hwr = activeGroup->getHWR(), hsr = activeGroup->getHSR();
+  painter.setPen(QPen(QColor(0,0,220), 3, Qt::DotLine));
+  painter.drawLine(0, bBorder * h, w, bBorder * h);
+  painter.drawLine(0, tBorder * h, w, tBorder * h);
+  painter.drawLine(lBorder * w, 0, lBorder * w, h);
+  rBorder = lBorder + (bBorder - tBorder) / hwr;
+  painter.drawLine(rBorder * w, 0, rBorder * w, h);
+  sBorder = rBorder + (bBorder - tBorder) / hsr;
+  painter.setPen(QPen(QColor(220,0,0), 3, Qt::DotLine));
+  painter.drawLine(sBorder * w, 0, sBorder * w, h);
+}
+
 void Canvas::drawSplines(QPainter &painter) {
   int w = width(), h = height();
 
@@ -240,6 +254,7 @@ void Canvas::paintEvent(QPaintEvent *) {
   QPainter painter(this);
 
   drawGrid(painter);
+  drawBorders(painter);
   drawSplines(painter);
 }
 
@@ -326,5 +341,17 @@ void Canvas::redoCmd() {
 
 void Canvas::undoCmd() {
   activeGroup->undoStack->undo();
+  repaint();
+}
+
+void Canvas::setHWRatio(double r)
+{
+  activeGroup->setHWR(r);
+  repaint();
+}
+
+void Canvas::setHSRatio(double r)
+{
+  activeGroup->setHSR(r);
   repaint();
 }

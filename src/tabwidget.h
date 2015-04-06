@@ -28,6 +28,8 @@ public slots:
   void copyCurve();
   void pasteCurve();
   void removeCurve();
+  void setHWRatio(double r);
+  void setHSRatio(double r);
 
   void addLetter(QChar name);
   void deleteLetter();

@@ -42,6 +42,16 @@ void TabWidget::copyCurve() { canvas->copyCurve(); }
 void TabWidget::pasteCurve() { canvas->pasteCurve(); }
 void TabWidget::removeCurve() { canvas->removeCurve(); }
 
+void TabWidget::setHWRatio(double r)
+{
+  canvas->setHWRatio(r);
+}
+
+void TabWidget::setHSRatio(double r)
+{
+  canvas->setHSRatio(r);
+}
+
 QString TabWidget::openProject(IOController &ioController) {
   projectFileName = QFileDialog::getOpenFileName(
       this, tr("Open Project"), "", tr("Trident font files (*.trft)"));

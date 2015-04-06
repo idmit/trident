@@ -37,6 +37,8 @@ public slots:
   void addLetter();
   void deleteLetter();
   void redoCmd();
+  void rhwCmd();
+  void rhsCmd();
   void undoCmd();
 };
 

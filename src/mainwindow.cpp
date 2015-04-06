@@ -36,6 +36,10 @@ void MainWindow::initMenuBar() {
                       QKeySequence(Qt::CTRL + Qt::Key_Z));
   menuEdit->addAction("Undo", this, SLOT(redoCmd()),
                       QKeySequence(Qt::CTRL + Qt::SHIFT + Qt::Key_Z));
+  menuEdit->addAction("Set height/width ratio", this, SLOT(rhwCmd()),
+                      QKeySequence(Qt::CTRL + Qt::SHIFT + Qt::Key_R));
+  menuEdit->addAction("Set height/space ratio", this, SLOT(rhsCmd()),
+                      QKeySequence(Qt::CTRL + Qt::SHIFT + Qt::Key_R));
 
   QMenu *menuCurve = new QMenu("Curve", this);
   menuCurve->addAction("Add Curve", this, SLOT(addCurve()),
@@ -104,6 +108,45 @@ void MainWindow::redoCmd() {
     currentTab->redoCmd();
   }
 }
+
+void MainWindow::rhwCmd() {
+  TabWidget *currentTab =
+      reinterpret_cast<TabWidget *>(qTabWidget->currentWidget());
+  if (currentTab) {
+    bool isOK = true;
+    while (isOK) {
+      double ratio =
+          QInputDialog::getDouble(this, tr("Set height / width ratio"),
+                                  tr("Amount:"), 1.25, 0.3, 3, 2, &isOK);
+      if (isOK) {
+        if (isOK) {
+           currentTab->setHWRatio(ratio);
+          isOK = false;
+        }
+      }
+    }
+  }
+}
+
+void MainWindow::rhsCmd() {
+  TabWidget *currentTab =
+      reinterpret_cast<TabWidget *>(qTabWidget->currentWidget());
+  if (currentTab) {
+    bool isOK = true;
+    while (isOK) {
+      double ratio =
+          QInputDialog::getDouble(this, tr("Set height / space ratio"),
+                                  tr("Amount:"), 0.5, 0.3, 3, 2, &isOK);
+      if (isOK) {
+        if (isOK) {
+          currentTab->setHSRatio(ratio);
+          isOK = false;
+        }
+      }
+    }
+  }
+}
+
 void MainWindow::openProject() {
   TabWidget *newTab = new TabWidget(qTabWidget);
   QString projectName = newTab->openProject(ioController);

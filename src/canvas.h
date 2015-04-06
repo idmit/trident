@@ -27,6 +27,7 @@ private:
   bool movingCurve = false;
   Spline originSpline;
 
+  double rBorder, lBorder = 0.4, tBorder = 0.4, bBorder = 0.6, sBorder;
   size_t radius = 10;
   SplineGroup *activeGroup = nullptr;
 
@@ -34,6 +35,7 @@ private:
 
   void drawGrid(QPainter &painter, size_t cellNum = 20,
                 size_t cellsInThick = 2);
+  void drawBorders(QPainter &painter);
   void drawSplines(QPainter &painter);
   size_t newPointIdx(QPointF &point);
   char movedCurveFits(QPointF &point, QList<QPointF> *newPositions);
@@ -45,6 +47,8 @@ public slots:
   void removeCurve();
   void redoCmd();
   void undoCmd();
+  void setHWRatio(double r);
+  void setHSRatio(double r);
 };
 
 #endif // CANVAS_H
