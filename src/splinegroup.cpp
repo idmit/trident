@@ -11,23 +11,18 @@ SplineGroup::SplineGroup() {
 
 void SplineGroup::setIdx(size_t idx) { activeIdx = idx; }
 
-void SplineGroup::setHWR(double ratio) {
-  hwr = ratio;
-}
+void SplineGroup::setHWR(double ratio) { hwr = ratio; }
 
 void SplineGroup::setHSR(double ratio) { hsr = ratio; }
 
-void SplineGroup::setBorder(QString name, double val)
-{
+void SplineGroup::setBorder(QString name, double val) {
   if (borders.contains(name)) {
     borders.erase(borders.find(name));
   }
-  borders.insert(name,val);
+  borders.insert(name, val);
 }
 
-double SplineGroup::getBorder(QString name) {
-  return borders.value(name);
-}
+double SplineGroup::getBorder(QString name) { return borders.value(name); }
 
 size_t SplineGroup::getIdx() { return activeIdx; }
 
