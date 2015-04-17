@@ -57,6 +57,8 @@ void MainWindow::initMenuBar() {
                         QKeySequence(Qt::CTRL + Qt::Key_L));
   menuLetter->addAction("Delete Letter", this, SLOT(deleteLetter()),
                         QKeySequence(Qt::CTRL + Qt::Key_K));
+  menuLetter->addAction("Rename Letter", this, SLOT(renameLetter()),
+                        QKeySequence(Qt::CTRL + Qt::Key_J));
 
   QMenu *menuAbout = new QMenu("Help", this);
   menuAbout->addAction("About", this, SLOT(about()),
@@ -213,6 +215,24 @@ void MainWindow::deleteLetter() {
       reinterpret_cast<TabWidget *>(qTabWidget->currentWidget());
   if (currentTab) {
     currentTab->deleteLetter();
+  }
+}
+
+void MainWindow::renameLetter() {
+  TabWidget *currentTab =
+      reinterpret_cast<TabWidget *>(qTabWidget->currentWidget());
+  if (currentTab) {
+    bool isOK = true;
+    while (isOK) {
+      QString text =
+          QInputDialog::getText(this, tr("Create Letter"), tr("Choose letter:"),
+                                QLineEdit::Normal, "A", &isOK);
+      if (isOK) {
+        if (isOK && (text.size() > 0) && (text.size() < 2)) {
+          isOK = currentTab->renameLetter(QChar(text[0]));
+        }
+      }
+    }
   }
 }
 

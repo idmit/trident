@@ -15,7 +15,6 @@ TabWidget::TabWidget(QWidget *parent) : QWidget(parent) {
   list->setSelectionMode(QAbstractItemView::SingleSelection);
   canvas = new Canvas(this);
 
-
   list->addItem(new QListWidgetItem("A"));
 
   connect(list, &QListWidget::currentTextChanged, this,
@@ -45,15 +44,9 @@ void TabWidget::copyCurve() { canvas->copyCurve(); }
 void TabWidget::pasteCurve() { canvas->pasteCurve(); }
 void TabWidget::removeCurve() { canvas->removeCurve(); }
 
-void TabWidget::setHWRatio(double r)
-{
-  canvas->setHWRatio(r);
-}
+void TabWidget::setHWRatio(double r) { canvas->setHWRatio(r); }
 
-void TabWidget::setHSRatio(double r)
-{
-  canvas->setHSRatio(r);
-}
+void TabWidget::setHSRatio(double r) { canvas->setHSRatio(r); }
 
 QString TabWidget::openProject(IOController &ioController) {
   projectFileName = QFileDialog::getOpenFileName(
@@ -102,6 +95,26 @@ void TabWidget::deleteLetter() {
     list->setCurrentRow(0);
     reloadCanvas(list->currentItem()->text());
   }
+}
+
+bool TabWidget::renameLetter(QChar name) {
+  QListWidgetItem *active = list->currentItem();
+  if (active) {
+    QChar curName = active->text().at(0);
+    if (curName == name) {
+      return false;
+    }
+    if (map.contains(name)) {
+      return true;
+    }
+    auto iter = map.find(curName);
+    SplineGroup sg = iter.value();
+    map.erase(iter);
+    map.insert(name, sg);
+    active->setText(name);
+    reloadCanvas(list->currentItem()->text());
+  }
+  return false;
 }
 
 void TabWidget::redoCmd() { canvas->redoCmd(); }

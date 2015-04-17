@@ -33,6 +33,7 @@ public slots:
 
   void addLetter(QChar name);
   void deleteLetter();
+  bool renameLetter(QChar name);
 
   QString openProject(IOController &ioController);
   QString saveProject(IOController &ioController);
