@@ -40,6 +40,7 @@ public slots:
   void rhwCmd();
   void rhsCmd();
   void undoCmd();
+  void about();
 };
 
 #endif // MAINWINDOW_H

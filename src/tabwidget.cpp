@@ -2,6 +2,8 @@
 #include <QListWidgetItem>
 #include <QSplitter>
 #include <QFileDialog>
+#include <QInputDialog>
+#include <QLineEdit>
 
 #include "tabwidget.h"
 
@@ -12,6 +14,7 @@ TabWidget::TabWidget(QWidget *parent) : QWidget(parent) {
   list = new QListWidget(this);
   list->setSelectionMode(QAbstractItemView::SingleSelection);
   canvas = new Canvas(this);
+
 
   list->addItem(new QListWidgetItem("A"));
 

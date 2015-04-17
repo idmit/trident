@@ -1,6 +1,7 @@
 #include <QMenuBar>
 #include <QTabWidget>
 #include <QInputDialog>
+#include <QMessageBox>
 
 #include "mainwindow.h"
 #include "tabwidget.h"
@@ -39,7 +40,7 @@ void MainWindow::initMenuBar() {
   menuEdit->addAction("Set height/width ratio", this, SLOT(rhwCmd()),
                       QKeySequence(Qt::CTRL + Qt::SHIFT + Qt::Key_R));
   menuEdit->addAction("Set height/space ratio", this, SLOT(rhsCmd()),
-                      QKeySequence(Qt::CTRL + Qt::SHIFT + Qt::Key_R));
+                      QKeySequence(Qt::CTRL + Qt::SHIFT + Qt::Key_T));
 
   QMenu *menuCurve = new QMenu("Curve", this);
   menuCurve->addAction("Add Curve", this, SLOT(addCurve()),
@@ -58,7 +59,8 @@ void MainWindow::initMenuBar() {
                         QKeySequence(Qt::CTRL + Qt::Key_K));
 
   QMenu *menuAbout = new QMenu("Help", this);
-  menuAbout->addAction("About");
+  menuAbout->addAction("About", this, SLOT(about()),
+                       QKeySequence(Qt::CTRL + Qt::Key_H));
 
   menuBar->addMenu(menuFile);
   menuBar->addMenu(menuEdit);
@@ -120,7 +122,7 @@ void MainWindow::rhwCmd() {
                                   tr("Amount:"), 2.5, 0.2, 10, 2, &isOK);
       if (isOK) {
         if (isOK) {
-           currentTab->setHWRatio(ratio);
+          currentTab->setHWRatio(ratio);
           isOK = false;
         }
       }
@@ -220,4 +222,16 @@ void MainWindow::undoCmd() {
   if (currentTab) {
     currentTab->undoCmd();
   }
+}
+
+void MainWindow::about() {
+  QMessageBox msgBox;
+  msgBox.setTextFormat(Qt::RichText);
+  msgBox.setText("Trident is a basic font editor implemented during our "
+                 "studies in SPbPU.<br/>Authors: Ivan Dmitrievsky and Semyon "
+                 "Kozyrev<br/>Github repository:<a "
+                 "href='https://github.com/ivandmitrievsky/trident'>Trident</"
+                 "a><br/>Take a look at our text editor that uses our fonts:<a "
+                 "href='https://github.com/ivandmitrievsky/triton'>Triton</a>");
+  msgBox.exec();
 }
