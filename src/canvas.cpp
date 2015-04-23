@@ -305,7 +305,7 @@ void Canvas::mouseReleaseEvent(QMouseEvent *) {
 
 void Canvas::paintEvent(QPaintEvent *) {
   QPainter painter(this);
-
+  painter.setRenderHint(QPainter::Antialiasing);
   drawGrid(painter);
   drawBorders(painter);
   drawSplines(painter);
